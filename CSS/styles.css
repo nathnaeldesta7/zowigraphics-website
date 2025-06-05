@@ -236,7 +236,7 @@ header {
   width: var(--sidebar-width);
   background-color: var(--sidebar-color);
   z-index: 100;
-  transition: var(--transition);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .left-sidebar {
@@ -1567,7 +1567,7 @@ footer {
     opacity: 0;
     visibility: hidden;
     transform: translateX(-100%);
-    transition: all 0.3s ease;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
   }
 
