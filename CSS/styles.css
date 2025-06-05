@@ -471,7 +471,7 @@ section {
   /* Maintain aspect ratio and prevent distortion */
   opacity: 0.5;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   height: auto;
   object-fit: contain;
 
