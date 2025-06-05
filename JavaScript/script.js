@@ -1,56 +1,62 @@
-window.addEventListener("load", () => {
-  const bgLines = document.querySelector(".bg-lines")
-
-  if (bgLines) {
-    function updateBgLinesHeight() {
-      const pageHeight = document.documentElement.scrollHeight
-      bgLines.style.height = pageHeight + "px"
-    }
-
-    updateBgLinesHeight()
-    window.addEventListener("resize", updateBgLinesHeight)
-
-    // Optional: update again after a slight delay for any dynamic content
-    setTimeout(updateBgLinesHeight, 1000)
-  }
-})
-
-// DOM Elements
-const body = document.body
-const hamburger = document.querySelector(".hamburger")
-const mobileMenu = document.querySelector(".mobile-menu")
-const mobileMenuLinks = document.querySelectorAll(".mobile-menu a")
-const themeToggle = document.querySelector(".theme-toggle")
-const scrollTopBtn = document.getElementById("scroll-top")
-const navLinks = document.querySelectorAll(".desktop-menu a")
-const leftSidebar = document.querySelector(".left-sidebar")
-const rightSidebar = document.querySelector(".right-sidebar")
-const sections = document.querySelectorAll("section")
-
-// Function to check and initialize mobile menu and header elements based on screen size
+// Function to check and initialize mobile elements based on screen size
 function initializeMobileElements() {
   const hamburgerMenu = document.querySelector(".hamburger")
   const logo = document.querySelector(".logo")
   const header = document.querySelector("header")
   const desktopMenu = document.querySelector(".desktop-menu")
 
+  // Force a reflow to ensure elements are rendered
+  if (header) {
+    header.offsetHeight
+  }
+
   if (window.innerWidth <= 768) {
-    // Mobile view - ensure elements are visible
+    // Mobile view - ensure elements are visible with explicit styles
     if (hamburgerMenu) {
-      hamburgerMenu.style.display = "flex"
-      hamburgerMenu.style.visibility = "visible"
-      hamburgerMenu.style.opacity = "1"
+      hamburgerMenu.style.cssText = `
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        z-index: 102;
+      `
     }
 
     if (logo) {
-      logo.style.display = "flex"
-      logo.style.visibility = "visible"
-      logo.style.opacity = "1"
+      logo.style.cssText = `
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        align-items: center;
+        gap: 10px;
+      `
     }
 
     if (header) {
-      header.style.display = "flex"
-      header.style.visibility = "visible"
+      header.style.cssText = `
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-height);
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 100;
+        background-color: rgba(32, 29, 25, 0.8);
+        backdrop-filter: blur(10px);
+        transition: var(--transition);
+      `
+
+      // Apply light mode styles if needed
+      if (document.body.classList.contains("light-mode")) {
+        header.style.backgroundColor = "rgba(245, 245, 245, 0.8)"
+      }
     }
 
     if (desktopMenu) {
@@ -63,14 +69,38 @@ function initializeMobileElements() {
     }
 
     if (logo) {
-      logo.style.display = "flex"
-      logo.style.visibility = "visible"
-      logo.style.opacity = "1"
+      logo.style.cssText = `
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        align-items: center;
+        gap: 10px;
+      `
     }
 
     if (header) {
-      header.style.display = "flex"
-      header.style.visibility = "visible"
+      header.style.cssText = `
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed;
+        top: 0;
+        left: var(--sidebar-width);
+        right: var(--sidebar-width);
+        height: var(--header-height);
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 40px;
+        z-index: 100;
+        background-color: rgba(32, 29, 25, 0.8);
+        backdrop-filter: blur(10px);
+        transition: var(--transition);
+      `
+
+      // Apply light mode styles if needed
+      if (document.body.classList.contains("light-mode")) {
+        header.style.backgroundColor = "rgba(245, 245, 245, 0.8)"
+      }
     }
 
     if (desktopMenu) {
@@ -247,81 +277,135 @@ class ScrollAnimationManager {
       const opacity = Math.min(scrolled / 100, 0.95)
       header.style.backgroundColor = `rgba(32, 29, 25, ${opacity})`
 
-      if (body.classList.contains("light-mode")) {
+      if (document.body.classList.contains("light-mode")) {
         header.style.backgroundColor = `rgba(245, 245, 245, ${opacity})`
       }
     }
   }
 }
 
-// Initialize scroll animation manager
+// Initialize scroll animation manager and mobile elements
 document.addEventListener("DOMContentLoaded", () => {
   new ScrollAnimationManager()
   document.body.classList.add("loaded")
 
-  // Initialize mobile elements on page load
+  // Initialize mobile elements immediately
   initializeMobileElements()
 
-  // Add a small delay to ensure all elements are properly loaded
+  // Add multiple delayed calls to ensure proper initialization
+  setTimeout(initializeMobileElements, 50)
+  setTimeout(initializeMobileElements, 100)
+  setTimeout(initializeMobileElements, 200)
+})
+
+// Enhanced window load event for additional safety
+window.addEventListener("load", () => {
+  const bgLines = document.querySelector(".bg-lines")
+
+  if (bgLines) {
+    function updateBgLinesHeight() {
+      const pageHeight = document.documentElement.scrollHeight
+      bgLines.style.height = pageHeight + "px"
+    }
+
+    updateBgLinesHeight()
+    window.addEventListener("resize", updateBgLinesHeight)
+
+    // Optional: update again after a slight delay for any dynamic content
+    setTimeout(updateBgLinesHeight, 1000)
+  }
+
+  // Final initialization call after everything is loaded
   setTimeout(initializeMobileElements, 100)
 })
 
-// Also update the resize event listener
+// Enhanced resize event listener
 window.addEventListener("resize", () => {
-  initializeMobileElements()
-  // Add a small delay for resize events too
-  setTimeout(initializeMobileElements, 50)
+  // Debounce resize events
+  clearTimeout(window.resizeTimeout)
+  window.resizeTimeout = setTimeout(() => {
+    initializeMobileElements()
+    // Additional call with delay for safety
+    setTimeout(initializeMobileElements, 50)
+  }, 100)
+})
+
+// Orientation change event for mobile devices
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    initializeMobileElements()
+    setTimeout(initializeMobileElements, 100)
+  }, 200)
 })
 
 // Mobile Menu Toggle
-hamburger.addEventListener("click", () => {
-  hamburger.classList.toggle("active")
-  mobileMenu.classList.toggle("active")
-  body.classList.toggle("no-scroll")
-})
+const hamburger = document.querySelector(".hamburger")
+const mobileMenu = document.querySelector(".mobile-menu")
+const mobileMenuLinks = document.querySelectorAll(".mobile-menu a")
+const themeToggle = document.querySelector(".theme-toggle")
+const scrollTopBtn = document.getElementById("scroll-top")
+const navLinks = document.querySelectorAll(".desktop-menu a")
+const leftSidebar = document.querySelector(".left-sidebar")
+const rightSidebar = document.querySelector(".right-sidebar")
+const sections = document.querySelectorAll("section")
+
+if (hamburger) {
+  hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active")
+    mobileMenu.classList.toggle("active")
+    document.body.classList.toggle("no-scroll")
+  })
+}
 
 // Close mobile menu when clicking a link
 mobileMenuLinks.forEach((link) => {
   link.addEventListener("click", () => {
-    hamburger.classList.remove("active")
-    mobileMenu.classList.remove("active")
-    body.classList.remove("no-scroll")
+    if (hamburger) hamburger.classList.remove("active")
+    if (mobileMenu) mobileMenu.classList.remove("active")
+    document.body.classList.remove("no-scroll")
   })
 })
 
 // Theme Toggle
-themeToggle.addEventListener("click", () => {
-  body.classList.toggle("light-mode")
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode")
 
-  // Save theme preference to localStorage
-  if (body.classList.contains("light-mode")) {
-    localStorage.setItem("theme", "light")
-  } else {
-    localStorage.setItem("theme", "dark")
-  }
-})
+    // Save theme preference to localStorage
+    if (document.body.classList.contains("light-mode")) {
+      localStorage.setItem("theme", "light")
+    } else {
+      localStorage.setItem("theme", "dark")
+    }
+
+    // Re-initialize mobile elements to apply theme changes
+    setTimeout(initializeMobileElements, 50)
+  })
+}
 
 // Check for saved theme preference
 const savedTheme = localStorage.getItem("theme")
 if (savedTheme === "light") {
-  body.classList.add("light-mode")
+  document.body.classList.add("light-mode")
 }
 
 // Scroll to Top Button
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 500) {
-    scrollTopBtn.classList.add("active")
-  } else {
-    scrollTopBtn.classList.remove("active")
-  }
-})
-
-scrollTopBtn.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
+if (scrollTopBtn) {
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 500) {
+      scrollTopBtn.classList.add("active")
+    } else {
+      scrollTopBtn.classList.remove("active")
+    }
   })
-})
+
+  scrollTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
+  })
+}
 
 // Active Navigation Link on Scroll
 function setActiveNavLink() {
@@ -354,12 +438,12 @@ window.addEventListener("scroll", () => {
   if (window.innerWidth <= 768) {
     if (scrollTop > lastScrollTop) {
       // Scrolling down
-      leftSidebar.classList.remove("active")
-      rightSidebar.classList.remove("active")
+      if (leftSidebar) leftSidebar.classList.remove("active")
+      if (rightSidebar) rightSidebar.classList.remove("active")
     } else {
       // Scrolling up
-      leftSidebar.classList.add("active")
-      rightSidebar.classList.add("active")
+      if (leftSidebar) leftSidebar.classList.add("active")
+      if (rightSidebar) rightSidebar.classList.add("active")
     }
     lastScrollTop = scrollTop
   }
@@ -544,7 +628,7 @@ const additionalDesigns = {
 // Design Gallery Modal Functionality
 const designItems = document.querySelectorAll(".design-item")
 const designModal = document.getElementById("design-modal")
-const designModalClose = designModal.querySelector(".modal-close")
+const designModalClose = designModal ? designModal.querySelector(".modal-close") : null
 const galleryMainImage = document.getElementById("gallery-main-image")
 const galleryThumbnails = document.querySelector(".gallery-thumbnails")
 const galleryTitle = document.querySelector(".gallery-title")
@@ -634,31 +718,35 @@ designItems.forEach((item) => {
     const designId = item.getAttribute("data-id")
     const designData = designGalleryData[designId]
 
-    if (designData) {
+    if (designData && designModal) {
       // Set title and description
-      galleryTitle.textContent = designData.title
-      galleryText.textContent = designData.description
+      if (galleryTitle) galleryTitle.textContent = designData.title
+      if (galleryText) galleryText.textContent = designData.description
 
       // Clear existing thumbnails
-      galleryThumbnails.innerHTML = ""
+      if (galleryThumbnails) galleryThumbnails.innerHTML = ""
 
       // Update total images counter
-      document.getElementById("total-images").textContent = designData.images.length
-      document.getElementById("current-image").textContent = "1"
+      const totalImagesEl = document.getElementById("total-images")
+      const currentImageEl = document.getElementById("current-image")
+      if (totalImagesEl) totalImagesEl.textContent = designData.images.length
+      if (currentImageEl) currentImageEl.textContent = "1"
 
       // Add thumbnails with improved styling
-      designData.images.forEach((image, index) => {
-        const thumbnail = document.createElement("div")
-        thumbnail.classList.add("gallery-thumbnail")
-        if (index === 0) thumbnail.classList.add("active")
+      if (galleryThumbnails) {
+        designData.images.forEach((image, index) => {
+          const thumbnail = document.createElement("div")
+          thumbnail.classList.add("gallery-thumbnail")
+          if (index === 0) thumbnail.classList.add("active")
 
-        const thumbnailImg = document.createElement("img")
-        thumbnailImg.src = image
-        thumbnailImg.alt = `${designData.title} - Image ${index + 1}`
+          const thumbnailImg = document.createElement("img")
+          thumbnailImg.src = image
+          thumbnailImg.alt = `${designData.title} - Image ${index + 1}`
 
-        thumbnail.appendChild(thumbnailImg)
-        galleryThumbnails.appendChild(thumbnail)
-      })
+          thumbnail.appendChild(thumbnailImg)
+          galleryThumbnails.appendChild(thumbnail)
+        })
+      }
 
       // Open modal with fade-in effect
       designModal.classList.add("active")
@@ -684,35 +772,41 @@ function changeGalleryImage(image, index, title) {
     })
 
     // Update counter
-    document.getElementById("current-image").textContent = index + 1
+    const currentImageEl = document.getElementById("current-image")
+    if (currentImageEl) currentImageEl.textContent = index + 1
 
     // Update active thumbnail
     document.querySelectorAll(".gallery-thumbnail").forEach((thumb) => {
       thumb.classList.remove("active")
     })
-    document.querySelectorAll(".gallery-thumbnail")[index].classList.add("active")
+    const thumbnails = document.querySelectorAll(".gallery-thumbnail")
+    if (thumbnails[index]) thumbnails[index].classList.add("active")
   } else {
     // Fallback to original behavior if scroll container doesn't exist
-    galleryMainImage.style.opacity = "0.5"
-    galleryMainImage.style.transform = "scale(0.95)"
+    if (galleryMainImage) {
+      galleryMainImage.style.opacity = "0.5"
+      galleryMainImage.style.transform = "scale(0.95)"
 
-    setTimeout(() => {
-      galleryMainImage.src = image
-      galleryMainImage.alt = `${title} - Image ${index + 1}`
+      setTimeout(() => {
+        galleryMainImage.src = image
+        galleryMainImage.alt = `${title} - Image ${index + 1}`
 
-      // Update counter
-      document.getElementById("current-image").textContent = index + 1
+        // Update counter
+        const currentImageEl = document.getElementById("current-image")
+        if (currentImageEl) currentImageEl.textContent = index + 1
 
-      // Fade back in with zoom-in effect
-      galleryMainImage.style.opacity = "1"
-      galleryMainImage.style.transform = "scale(1)"
+        // Fade back in with zoom-in effect
+        galleryMainImage.style.opacity = "1"
+        galleryMainImage.style.transform = "scale(1)"
 
-      // Update active thumbnail
-      document.querySelectorAll(".gallery-thumbnail").forEach((thumb) => {
-        thumb.classList.remove("active")
-      })
-      document.querySelectorAll(".gallery-thumbnail")[index].classList.add("active")
-    }, 200)
+        // Update active thumbnail
+        document.querySelectorAll(".gallery-thumbnail").forEach((thumb) => {
+          thumb.classList.remove("active")
+        })
+        const thumbnails = document.querySelectorAll(".gallery-thumbnail")
+        if (thumbnails[index]) thumbnails[index].classList.add("active")
+      }, 200)
+    }
   }
 }
 
@@ -724,7 +818,7 @@ function setupGalleryNavigation(designData) {
 
   // Convert gallery container to PDF-like scrolling mode
   const galleryContainer = document.querySelector(".gallery-container")
-  galleryContainer.classList.add("pdf-scroll-mode")
+  if (galleryContainer) galleryContainer.classList.add("pdf-scroll-mode")
 
   // Create a continuous scroll container for all images
   const galleryScroll = document.createElement("div")
@@ -745,60 +839,69 @@ function setupGalleryNavigation(designData) {
 
   // Replace the main image with the scroll container
   const galleryMain = document.querySelector(".gallery-main")
-  galleryMain.innerHTML = ""
-  galleryMain.appendChild(galleryScroll)
+  if (galleryMain) {
+    galleryMain.innerHTML = ""
+    galleryMain.appendChild(galleryScroll)
+  }
 
   // Update total images counter
-  document.getElementById("total-images").textContent = designData.images.length
+  const totalImagesEl = document.getElementById("total-images")
+  if (totalImagesEl) totalImagesEl.textContent = designData.images.length
 
   // Previous button click - scroll up
-  prevBtn.onclick = () => {
-    const scrollAmount = galleryScroll.clientHeight / designData.images.length
-    galleryScroll.scrollBy({
-      top: -scrollAmount,
-      behavior: "smooth",
-    })
-
-    // Update current image index based on scroll position
-    setTimeout(() => {
-      const scrollPosition = galleryScroll.scrollTop
-      const imageHeight = galleryScroll.clientHeight / designData.images.length
-      currentIndex = Math.round(scrollPosition / imageHeight)
-      if (currentIndex < 0) currentIndex = 0
-
-      // Update counter
-      document.getElementById("current-image").textContent = currentIndex + 1
-
-      // Update active thumbnail
-      document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
-        thumb.classList.toggle("active", idx === currentIndex)
+  if (prevBtn) {
+    prevBtn.onclick = () => {
+      const scrollAmount = galleryScroll.clientHeight / designData.images.length
+      galleryScroll.scrollBy({
+        top: -scrollAmount,
+        behavior: "smooth",
       })
-    }, 300)
+
+      // Update current image index based on scroll position
+      setTimeout(() => {
+        const scrollPosition = galleryScroll.scrollTop
+        const imageHeight = galleryScroll.clientHeight / designData.images.length
+        currentIndex = Math.round(scrollPosition / imageHeight)
+        if (currentIndex < 0) currentIndex = 0
+
+        // Update counter
+        const currentImageEl = document.getElementById("current-image")
+        if (currentImageEl) currentImageEl.textContent = currentIndex + 1
+
+        // Update active thumbnail
+        document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
+          thumb.classList.toggle("active", idx === currentIndex)
+        })
+      }, 300)
+    }
   }
 
   // Next button click - scroll down
-  nextBtn.onclick = () => {
-    const scrollAmount = galleryScroll.clientHeight / designData.images.length
-    galleryScroll.scrollBy({
-      top: scrollAmount,
-      behavior: "smooth",
-    })
-
-    // Update current image index based on scroll position
-    setTimeout(() => {
-      const scrollPosition = galleryScroll.scrollTop
-      const imageHeight = galleryScroll.clientHeight / designData.images.length
-      currentIndex = Math.round(scrollPosition / imageHeight)
-      if (currentIndex >= designData.images.length) currentIndex = designData.images.length - 1
-
-      // Update counter
-      document.getElementById("current-image").textContent = currentIndex + 1
-
-      // Update active thumbnail
-      document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
-        thumb.classList.toggle("active", idx === currentIndex)
+  if (nextBtn) {
+    nextBtn.onclick = () => {
+      const scrollAmount = galleryScroll.clientHeight / designData.images.length
+      galleryScroll.scrollBy({
+        top: scrollAmount,
+        behavior: "smooth",
       })
-    }, 300)
+
+      // Update current image index based on scroll position
+      setTimeout(() => {
+        const scrollPosition = galleryScroll.scrollTop
+        const imageHeight = galleryScroll.clientHeight / designData.images.length
+        currentIndex = Math.round(scrollPosition / imageHeight)
+        if (currentIndex >= designData.images.length) currentIndex = designData.images.length - 1
+
+        // Update counter
+        const currentImageEl = document.getElementById("current-image")
+        if (currentImageEl) currentImageEl.textContent = currentIndex + 1
+
+        // Update active thumbnail
+        document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
+          thumb.classList.toggle("active", idx === currentIndex)
+        })
+      }, 300)
+    }
   }
 
   // Scroll event to update current image index
@@ -810,7 +913,8 @@ function setupGalleryNavigation(designData) {
     if (currentIndex >= designData.images.length) currentIndex = designData.images.length - 1
 
     // Update counter
-    document.getElementById("current-image").textContent = currentIndex + 1
+    const currentImageEl = document.getElementById("current-image")
+    if (currentImageEl) currentImageEl.textContent = currentIndex + 1
 
     // Update active thumbnail
     document.querySelectorAll(".gallery-thumbnail").forEach((thumb, idx) => {
@@ -832,7 +936,8 @@ function setupGalleryNavigation(designData) {
       currentIndex = index
 
       // Update counter
-      document.getElementById("current-image").textContent = currentIndex + 1
+      const currentImageEl = document.getElementById("current-image")
+      if (currentImageEl) currentImageEl.textContent = currentIndex + 1
 
       // Update active thumbnail
       document.querySelectorAll(".gallery-thumbnail").forEach((t) => {
@@ -844,15 +949,15 @@ function setupGalleryNavigation(designData) {
 
   // Keyboard navigation
   document.addEventListener("keydown", function galleryKeyNav(e) {
-    if (!designModal.classList.contains("active")) {
+    if (!designModal || !designModal.classList.contains("active")) {
       document.removeEventListener("keydown", galleryKeyNav)
       return
     }
 
     if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-      prevBtn.click()
+      if (prevBtn) prevBtn.click()
     } else if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-      nextBtn.click()
+      if (nextBtn) nextBtn.click()
     }
   })
 
@@ -863,10 +968,10 @@ function setupGalleryNavigation(designData) {
       e.preventDefault()
       if (e.deltaY > 0) {
         // Scroll down
-        nextBtn.click()
+        if (nextBtn) nextBtn.click()
       } else {
         // Scroll up
-        prevBtn.click()
+        if (prevBtn) prevBtn.click()
       }
     },
     { passive: false },
@@ -876,7 +981,7 @@ function setupGalleryNavigation(designData) {
 // Project Case Study Modal Functionality
 const projectLinks = document.querySelectorAll(".project-link")
 const projectModal = document.getElementById("project-modal")
-const projectModalClose = projectModal.querySelector(".modal-close")
+const projectModalClose = projectModal ? projectModal.querySelector(".modal-close") : null
 const caseStudyTitle = document.querySelector(".case-study-title")
 const caseStudySubtitle = document.querySelector(".case-study-subtitle")
 const caseStudyGallery = document.querySelector(".case-study-gallery")
@@ -890,9 +995,9 @@ const projectCaseStudyData = {
     title: "Logo and Branding",
     subtitle: "Simple | Eyecatch | Modern",
     challenge:
-      "Many startups and small businesses struggle with building a strong visual identity. They often have unclear branding, inconsistent visuals, and logos that don’t reflect their values or connect with their target audience. This lack of brand clarity makes it difficult to stand out in competitive markets.",
+      "Many startups and small businesses struggle with building a strong visual identity. They often have unclear branding, inconsistent visuals, and logos that don't reflect their values or connect with their target audience. This lack of brand clarity makes it difficult to stand out in competitive markets.",
     solution:
-      "At Zowi Creative Solution, we start with strategy. We dive deep into each client’s mission, audience, and industry to craft logos and branding systems that are simple, memorable, and modern. Our process includes logo design, typography, color selection, and brand guidelines to ensure visual consistency across all platforms.",
+      "At Zowi Creative Solution, we start with strategy. We dive deep into each client's mission, audience, and industry to craft logos and branding systems that are simple, memorable, and modern. Our process includes logo design, typography, color selection, and brand guidelines to ensure visual consistency across all platforms.",
     results:
       "Clients walk away with a bold, professional identity that builds trust and leaves a lasting impression. Our branding solutions have helped businesses increase engagement, improve recognition, and attract their ideal audience setting them up for long-term success.",
     images: [
@@ -922,31 +1027,33 @@ projectLinks.forEach((link) => {
     const projectId = link.getAttribute("data-project")
     const projectData = projectCaseStudyData[projectId]
 
-    if (projectData) {
+    if (projectData && projectModal) {
       // Set title and subtitle
-      caseStudyTitle.textContent = projectData.title
-      caseStudySubtitle.textContent = projectData.subtitle
+      if (caseStudyTitle) caseStudyTitle.textContent = projectData.title
+      if (caseStudySubtitle) caseStudySubtitle.textContent = projectData.subtitle
 
       // Clear existing gallery
-      caseStudyGallery.innerHTML = ""
+      if (caseStudyGallery) caseStudyGallery.innerHTML = ""
 
       // Add gallery images
-      projectData.images.forEach((image, index) => {
-        const imageDiv = document.createElement("div")
-        imageDiv.classList.add("case-study-image")
+      if (caseStudyGallery) {
+        projectData.images.forEach((image, index) => {
+          const imageDiv = document.createElement("div")
+          imageDiv.classList.add("case-study-image")
 
-        const img = document.createElement("img")
-        img.src = image
-        img.alt = `${projectData.title} - Image ${index + 1}`
+          const img = document.createElement("img")
+          img.src = image
+          img.alt = `${projectData.title} - Image ${index + 1}`
 
-        imageDiv.appendChild(img)
-        caseStudyGallery.appendChild(imageDiv)
-      })
+          imageDiv.appendChild(img)
+          caseStudyGallery.appendChild(imageDiv)
+        })
+      }
 
       // Set case study content
-      caseStudyChallenge.textContent = projectData.challenge
-      caseStudySolution.textContent = projectData.solution
-      caseStudyResults.textContent = projectData.results
+      if (caseStudyChallenge) caseStudyChallenge.textContent = projectData.challenge
+      if (caseStudySolution) caseStudySolution.textContent = projectData.solution
+      if (caseStudyResults) caseStudyResults.textContent = projectData.results
 
       // Open modal
       projectModal.classList.add("active")
@@ -956,24 +1063,32 @@ projectLinks.forEach((link) => {
 })
 
 // Close project case study modal
-projectModalClose.addEventListener("click", () => {
-  projectModal.classList.remove("active")
-  document.body.classList.remove("no-scroll")
-})
+if (projectModalClose) {
+  projectModalClose.addEventListener("click", () => {
+    if (projectModal) {
+      projectModal.classList.remove("active")
+      document.body.classList.remove("no-scroll")
+    }
+  })
+}
 
 // Close design gallery modal
-designModalClose.addEventListener("click", () => {
-  designModal.classList.remove("active")
-  document.body.classList.remove("no-scroll")
-})
+if (designModalClose) {
+  designModalClose.addEventListener("click", () => {
+    if (designModal) {
+      designModal.classList.remove("active")
+      document.body.classList.remove("no-scroll")
+    }
+  })
+}
 
 // Close modals when clicking outside
 window.addEventListener("click", (e) => {
-  if (e.target === designModal) {
+  if (designModal && e.target === designModal) {
     designModal.classList.remove("active")
     document.body.classList.remove("no-scroll")
   }
-  if (e.target === projectModal) {
+  if (projectModal && e.target === projectModal) {
     projectModal.classList.remove("active")
     document.body.classList.remove("no-scroll")
   }
@@ -982,8 +1097,8 @@ window.addEventListener("click", (e) => {
 // Close modals with Escape key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    designModal.classList.remove("active")
-    projectModal.classList.remove("active")
+    if (designModal) designModal.classList.remove("active")
+    if (projectModal) projectModal.classList.remove("active")
     document.body.classList.remove("no-scroll")
   }
 })
@@ -1050,31 +1165,35 @@ document.addEventListener("DOMContentLoaded", () => {
 function openDesignModal(designId) {
   const designData = designGalleryData[designId]
 
-  if (designData) {
+  if (designData && designModal) {
     // Set title and description
-    galleryTitle.textContent = designData.title
-    galleryText.textContent = designData.description
+    if (galleryTitle) galleryTitle.textContent = designData.title
+    if (galleryText) galleryText.textContent = designData.description
 
     // Clear existing thumbnails
-    galleryThumbnails.innerHTML = ""
+    if (galleryThumbnails) galleryThumbnails.innerHTML = ""
 
     // Update total images counter
-    document.getElementById("total-images").textContent = designData.images.length
-    document.getElementById("current-image").textContent = "1"
+    const totalImagesEl = document.getElementById("total-images")
+    const currentImageEl = document.getElementById("current-image")
+    if (totalImagesEl) totalImagesEl.textContent = designData.images.length
+    if (currentImageEl) currentImageEl.textContent = "1"
 
     // Add thumbnails with improved styling
-    designData.images.forEach((image, index) => {
-      const thumbnail = document.createElement("div")
-      thumbnail.classList.add("gallery-thumbnail")
-      if (index === 0) thumbnail.classList.add("active")
+    if (galleryThumbnails) {
+      designData.images.forEach((image, index) => {
+        const thumbnail = document.createElement("div")
+        thumbnail.classList.add("gallery-thumbnail")
+        if (index === 0) thumbnail.classList.add("active")
 
-      const thumbnailImg = document.createElement("img")
-      thumbnailImg.src = image
-      thumbnailImg.alt = `${designData.title} - Image ${index + 1}`
+        const thumbnailImg = document.createElement("img")
+        thumbnailImg.src = image
+        thumbnailImg.alt = `${designData.title} - Image ${index + 1}`
 
-      thumbnail.appendChild(thumbnailImg)
-      galleryThumbnails.appendChild(thumbnail)
-    })
+        thumbnail.appendChild(thumbnailImg)
+        galleryThumbnails.appendChild(thumbnail)
+      })
+    }
 
     // Open modal with fade-in effect
     designModal.classList.add("active")
