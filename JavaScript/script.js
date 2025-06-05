@@ -455,7 +455,7 @@ window.addEventListener("scroll", () => {
             visibility: hidden !important;
             transform: translateX(-100%) !important;
             pointer-events: none !important;
-            transition: all 0.3s ease !important;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
           `
         }
         if (rightSidebar) {
@@ -466,7 +466,7 @@ window.addEventListener("scroll", () => {
             visibility: hidden !important;
             transform: translateX(100%) !important;
             pointer-events: none !important;
-            transition: all 0.3s ease !important;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
           `
         }
       } else if (scrollTop < lastScrollTop) {
@@ -479,7 +479,7 @@ window.addEventListener("scroll", () => {
             visibility: visible !important;
             transform: translateX(0) !important;
             pointer-events: auto !important;
-            transition: all 0.3s ease !important;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
           `
         }
         if (rightSidebar) {
@@ -490,12 +490,12 @@ window.addEventListener("scroll", () => {
             visibility: visible !important;
             transform: translateX(0) !important;
             pointer-events: auto !important;
-            transition: all 0.3s ease !important;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
           `
         }
       }
       lastScrollTop = scrollTop <= 0 ? 0 : scrollTop // For Mobile or negative scrolling
-    }, 50) // Small delay to prevent flickering
+    }, 100) // Increased from 50ms to 100ms for smoother detection
   }
 })
 
