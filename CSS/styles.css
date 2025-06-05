@@ -471,7 +471,7 @@ section {
   /* Maintain aspect ratio and prevent distortion */
   opacity: 0.5;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   height: auto;
   object-fit: contain;
 
@@ -1622,7 +1622,7 @@ footer {
 
   /* Mobile responsive - only change max-width, keep animation consistent */
   .image-container img {
-    max-width: 250px;
+    max-width: 320px;
   }
 
   .modern-gallery .gallery-thumbnails {
@@ -1654,7 +1654,7 @@ footer {
 
   /* Very small screens - only change max-width, keep animation consistent */
   .image-container img {
-    max-width: 200px;
+    max-width: 260px;
   }
 
   .modern-gallery .gallery-thumbnails {
