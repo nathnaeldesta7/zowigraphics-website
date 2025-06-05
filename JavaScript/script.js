@@ -429,23 +429,73 @@ function setActiveNavLink() {
 
 window.addEventListener("scroll", setActiveNavLink)
 
-// Show/Hide Sidebars on Mobile
+// FIXED: Enhanced Show/Hide Sidebars on Mobile with complete hiding
 let lastScrollTop = 0
+let scrollTimeout = null
 
 window.addEventListener("scroll", () => {
   const scrollTop = window.scrollY
 
+  // Only apply sidebar hiding on mobile
   if (window.innerWidth <= 768) {
-    if (scrollTop > lastScrollTop) {
-      // Scrolling down
-      if (leftSidebar) leftSidebar.classList.remove("active")
-      if (rightSidebar) rightSidebar.classList.remove("active")
-    } else {
-      // Scrolling up
-      if (leftSidebar) leftSidebar.classList.add("active")
-      if (rightSidebar) rightSidebar.classList.add("active")
+    // Clear any existing timeout
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout)
     }
-    lastScrollTop = scrollTop
+
+    // Add a small delay to prevent flickering during fast scrolling
+    scrollTimeout = setTimeout(() => {
+      if (scrollTop > lastScrollTop && scrollTop > 100) {
+        // Scrolling down - hide sidebars completely
+        if (leftSidebar) {
+          leftSidebar.classList.remove("active")
+          leftSidebar.style.cssText = `
+            width: 0 !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateX(-100%) !important;
+            pointer-events: none !important;
+            transition: all 0.3s ease !important;
+          `
+        }
+        if (rightSidebar) {
+          rightSidebar.classList.remove("active")
+          rightSidebar.style.cssText = `
+            width: 0 !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateX(100%) !important;
+            pointer-events: none !important;
+            transition: all 0.3s ease !important;
+          `
+        }
+      } else if (scrollTop < lastScrollTop) {
+        // Scrolling up - show sidebars
+        if (leftSidebar) {
+          leftSidebar.classList.add("active")
+          leftSidebar.style.cssText = `
+            width: 60px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateX(0) !important;
+            pointer-events: auto !important;
+            transition: all 0.3s ease !important;
+          `
+        }
+        if (rightSidebar) {
+          rightSidebar.classList.add("active")
+          rightSidebar.style.cssText = `
+            width: 60px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateX(0) !important;
+            pointer-events: auto !important;
+            transition: all 0.3s ease !important;
+          `
+        }
+      }
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop // For Mobile or negative scrolling
+    }, 50) // Small delay to prevent flickering
   }
 })
 
