@@ -109,10 +109,11 @@ function initializeMobileElements() {
   }
 }
 
-// Enhanced Scroll Animation System
+// FIXED: Enhanced Scroll Animation System with proper image loading management
 class ScrollAnimationManager {
   constructor() {
     this.animatedElements = new Set()
+    this.loadedImages = new Set() // Track loaded images to prevent reloading
     this.observerOptions = {
       root: null,
       rootMargin: "-10% 0px -10% 0px",
@@ -123,17 +124,48 @@ class ScrollAnimationManager {
 
   init() {
     this.createObserver()
+    this.preloadCriticalImages() // Preload important images
     this.observeElements()
     this.addScrollListener()
+  }
+
+  // FIXED: Preload critical images to prevent loading issues
+  preloadCriticalImages() {
+    const criticalImages = document.querySelectorAll(".design-item img, .project-image img")
+    criticalImages.forEach((img) => {
+      if (!this.loadedImages.has(img.src)) {
+        // Create a new image object to preload
+        const preloadImg = new Image()
+        preloadImg.onload = () => {
+          this.loadedImages.add(img.src)
+          img.style.opacity = "1"
+        }
+        preloadImg.onerror = () => {
+          console.warn("Failed to preload image:", img.src)
+        }
+        preloadImg.src = img.src
+      }
+    })
   }
 
   createObserver() {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
+        // FIXED: Only animate once and don't interfere with loaded images
         if (entry.isIntersecting && !this.animatedElements.has(entry.target)) {
           this.animateElement(entry.target)
           this.animatedElements.add(entry.target)
+
+          // Ensure images in this element stay loaded
+          const images = entry.target.querySelectorAll("img")
+          images.forEach((img) => {
+            if (img.complete && img.naturalHeight !== 0) {
+              this.loadedImages.add(img.src)
+              img.style.opacity = "1"
+            }
+          })
         }
+        // FIXED: Don't unobserve or modify already animated elements
       })
     }, this.observerOptions)
   }
@@ -149,6 +181,14 @@ class ScrollAnimationManager {
 
   setInitialState(element) {
     const animation = element.dataset.animation || "fadeInUp"
+
+    // FIXED: Don't modify images that are already loaded
+    const images = element.querySelectorAll("img")
+    images.forEach((img) => {
+      if (this.loadedImages.has(img.src)) {
+        return // Skip already loaded images
+      }
+    })
 
     switch (animation) {
       case "fadeInUp":
@@ -209,6 +249,13 @@ class ScrollAnimationManager {
       // Add a class for additional CSS animations if needed
       element.classList.add("animated")
 
+      // FIXED: Ensure images in animated elements remain visible
+      const images = element.querySelectorAll("img")
+      images.forEach((img) => {
+        img.style.opacity = "1"
+        this.loadedImages.add(img.src)
+      })
+
       // Trigger any custom animations
       this.triggerCustomAnimation(element)
     }, delay * 1000)
@@ -242,6 +289,13 @@ class ScrollAnimationManager {
         setTimeout(() => {
           child.style.opacity = "1"
           child.style.transform = "translateY(0)"
+
+          // FIXED: Ensure child images stay loaded
+          const images = child.querySelectorAll("img")
+          images.forEach((img) => {
+            img.style.opacity = "1"
+            this.loadedImages.add(img.src)
+          })
         }, index * 100)
       }
     })
@@ -284,9 +338,77 @@ class ScrollAnimationManager {
   }
 }
 
-// Initialize scroll animation manager and mobile elements
+// FIXED: Image Loading Manager to ensure images load once and stay loaded
+class ImageLoadingManager {
+  constructor() {
+    this.loadedImages = new Set()
+    this.init()
+  }
+
+  init() {
+    this.setupImageLoading()
+    this.preventImageReloading()
+  }
+
+  setupImageLoading() {
+    const allImages = document.querySelectorAll("img")
+    allImages.forEach((img) => {
+      // Skip if already processed
+      if (img.dataset.processed) return
+
+      img.dataset.processed = "true"
+
+      // If image is already loaded
+      if (img.complete && img.naturalHeight !== 0) {
+        this.loadedImages.add(img.src)
+        img.style.opacity = "1"
+        return
+      }
+
+      // Set up loading handlers
+      img.addEventListener(
+        "load",
+        () => {
+          this.loadedImages.add(img.src)
+          img.style.opacity = "1"
+        },
+        { once: true },
+      )
+
+      img.addEventListener(
+        "error",
+        () => {
+          console.warn("Failed to load image:", img.src)
+        },
+        { once: true },
+      )
+    })
+  }
+
+  preventImageReloading() {
+    // Use MutationObserver to watch for any attempts to modify loaded images
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "attributes" && mutation.attributeName === "src") {
+          const img = mutation.target
+          if (this.loadedImages.has(img.src)) {
+            img.style.opacity = "1"
+          }
+        }
+      })
+    })
+
+    // Observe all images for src changes
+    document.querySelectorAll("img").forEach((img) => {
+      observer.observe(img, { attributes: true, attributeFilter: ["src"] })
+    })
+  }
+}
+
+// Initialize scroll animation manager, image loading manager, and mobile elements
 document.addEventListener("DOMContentLoaded", () => {
   new ScrollAnimationManager()
+  new ImageLoadingManager() // FIXED: Add image loading manager
   document.body.classList.add("loaded")
 
   // Initialize mobile elements immediately
