@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zowi Graphics | Creative Design Studio in Addis Ababa, Ethiopia</title>
     <meta name="description" content="Zowi Graphics is a top design studio in Addis Ababa, Ethiopia, specializing in logo design, branding, and web development.">
-    <meta name="keywords" content="graphic design, logo design, branding, web development, UI/UX design, packaging design, social media design, print media design, creative design studio, Addis Ababa, Ethiopia, visual identity, brand strategy">
+    <meta name="keywords" content="graphic design, logo design, branding, web development, UI/UX design, Addis Ababa, Ethiopia">
     <meta name="author" content="Zowi Graphics">
     <meta name="robots" content="index, follow">
     
     <!-- Canonical URL -->
-   <link rel="canonical" href="https://zowigraphics.com">
+    <link rel="canonical" href="https://zowigraphics.com">
     
     <!-- Favicon -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -42,27 +42,34 @@
     
     <!-- Preload Critical Resources -->
     <link rel="preload" href="icons/logo.png" as="image">
-    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="CSS/styles.css" as="style">
     
-    <!-- Structured Data -->
+    <!-- Enhanced Organization Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": ["Organization", "LocalBusiness"],
       "name": "Zowi Graphics",
       "description": "Creative design studio specializing in logo design, branding, and web development",
       "url": "https://zowigraphics.com",
-      "logo": "https://zowigraphics.come/icons/logo.png",
+      "logo": "https://zowigraphics.com/icons/logo.png",
+      "image": "https://zowigraphics.com/og-image.jpg",
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+251-947580700",
         "contactType": "customer service",
-        "email": "hello@zowigraphics.com"
+        "email": "hello@zowigraphics.com",
+        "availableLanguage": "English"
       },
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Addis Ababa",
         "addressCountry": "Ethiopia"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "9.0320",
+        "longitude": "38.7469"
       },
       "sameAs": [
         "https://t.me/zowigraphics",
@@ -76,31 +83,102 @@
       "serviceArea": {
         "@type": "Country",
         "name": "Ethiopia"
+      },
+      "priceRange": "$$",
+      "openingHours": "Mo-Fr 09:00-18:00",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Design Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Logo Design",
+              "description": "Professional logo design and brand identity creation"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Web Development",
+              "description": "Responsive website development and design"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "UI/UX Design",
+              "description": "User interface and user experience design services"
+            }
+          }
+        ]
       }
     }
     </script>
 
+    <!-- Complete Breadcrumb Schema -->
     <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https:/zowigraphics.com/#home"
-    },
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://zowigraphics.com/#home"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "About",
+          "item": "https://zowigraphics.com/#about"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Services",
+          "item": "https://zowigraphics.com/#services"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Design Portfolio",
+          "item": "https://zowigraphics.com/#design"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Projects",
+          "item": "https://zowigraphics.com/#project"
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
+          "name": "Contact",
+          "item": "https://zowigraphics.com/#contact"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Website Schema -->
+    <script type="application/ld+json">
     {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "About",
-      "item": "https://zowigraphics.com/#about"
-    },
-    // Update all other items similarly
-  ]
-}
-</script>
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Zowi Graphics",
+      "url": "https://zowigraphics.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://zowigraphics.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body class="dark-mode">
     <!-- Background Lines -->
@@ -115,9 +193,9 @@
     <!-- Header -->
     <header class="scroll-animate" data-animation="slideDown">
         <div class="logo">
-            <a href="#home"><img src="icons/logo.png" alt="Zowi Graphics Logo"></a>
+            <a href="#home"><img src="icons/logo.png" alt="Zowi Graphics - Creative Design Studio Logo" width="120" height="40"></a>
         </div>
-        <nav>
+        <nav role="navigation" aria-label="Main navigation">
             <ul class="desktop-menu">
                 <li><a href="#home" class="active">HOME</a></li>
                 <li><a href="#about">ABOUT</a></li>
@@ -125,7 +203,7 @@
                 <li><a href="#design">DESIGN</a></li>
                 <li><a href="#project">PROJECT</a></li>
             </ul>
-            <div class="hamburger">
+            <div class="hamburger" aria-label="Toggle mobile menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -134,7 +212,7 @@
     </header>
 
     <!-- Mobile Menu -->
-    <div class="mobile-menu">
+    <div class="mobile-menu" role="navigation" aria-label="Mobile navigation">
         <ul>
             <li><a href="#home">HOME</a></li>
             <li><a href="#about">ABOUT</a></li>
@@ -145,46 +223,45 @@
     </div>
 
     <!-- Left Sidebar -->
-    <div class="sidebar left-sidebar scroll-animate" data-animation="slideLeft">
-        <a href="https://t.me/zowigraphics" target="_blank" class="social-icon" title="Telegram">
-            <img src="icons/telegram.png" alt="Telegram">
+    <div class="sidebar left-sidebar scroll-animate" data-animation="slideLeft" role="complementary" aria-label="Social media links">
+        <a href="https://t.me/zowigraphics" target="_blank" rel="noopener" class="social-icon" title="Follow us on Telegram">
+            <img src="icons/telegram.png" alt="Telegram social media icon" width="24" height="24" loading="lazy">
         </a>
-        <a href="https://www.linkedin.com/in/zowigraphics" target="_blank" class="social-icon" title="LinkedIn">
-            <img src="icons/linkedin.png" alt="LinkedIn">
+        <a href="https://www.linkedin.com/in/zowigraphics" target="_blank" rel="noopener" class="social-icon" title="Connect on LinkedIn">
+            <img src="icons/linkedin.png" alt="LinkedIn professional network icon" width="24" height="24" loading="lazy">
         </a>
-        <a href="https://instagram.com/zowigraphics" target="_blank" class="social-icon" title="Instagram">
-            <img src="icons/instagram.png" alt="Instagram">
+        <a href="https://instagram.com/zowigraphics" target="_blank" rel="noopener" class="social-icon" title="Follow on Instagram">
+            <img src="icons/instagram.png" alt="Instagram social media icon" width="24" height="24" loading="lazy">
         </a>
-        <a href="https://tiktok.com/@zowigraphics" target="_blank" class="social-icon" title="TikTok">
-            <img src="icons/tiktok.png" alt="TikTok">
+        <a href="https://tiktok.com/@zowigraphics" target="_blank" rel="noopener" class="social-icon" title="Watch on TikTok">
+            <img src="icons/tiktok.png" alt="TikTok video platform icon" width="24" height="24" loading="lazy">
         </a>
-        <a href="https://web.facebook.com/profile.php?id=61566415647787" target="_blank" class="social-icon" title="Facebook">
-            <img src="icons/facebook.png" alt="Facebook">
+        <a href="https://web.facebook.com/profile.php?id=61566415647787" target="_blank" rel="noopener" class="social-icon" title="Like us on Facebook">
+            <img src="icons/facebook.png" alt="Facebook social network icon" width="24" height="24" loading="lazy">
         </a>
-        
     </div>
 
     <!-- Right Sidebar -->
-    <div class="sidebar right-sidebar scroll-animate" data-animation="slideRight">
-        <a href="https://github.com/nathnaeldesta7" target="_blank" class="social-icon" title="GitHub">
-            <img src="icons/github.png" alt="GitHub">
+    <div class="sidebar right-sidebar scroll-animate" data-animation="slideRight" role="complementary" aria-label="Professional links">
+        <a href="https://github.com/nathnaeldesta7" target="_blank" rel="noopener" class="social-icon" title="View GitHub projects">
+            <img src="icons/github.png" alt="GitHub code repository icon" width="24" height="24" loading="lazy">
         </a>
-        <a href="https://www.upwork.com/freelancers/~019f11efd5cec7097a" target="_blank" class="social-icon" title="UpWork">
-            <img src="icons/upwork.png" alt="UpWork">
+        <a href="https://www.upwork.com/freelancers/~019f11efd5cec7097a" target="_blank" rel="noopener" class="social-icon" title="Hire on UpWork">
+            <img src="icons/upwork.png" alt="UpWork freelance platform icon" width="24" height="24" loading="lazy">
         </a>
-        <a href="https://x.com/nathnaeldesta7" target="_blank" class="social-icon" title="Twitter">
-            <img src="icons/twitter.png" alt="Twitter">
+        <a href="https://x.com/nathnaeldesta7" target="_blank" rel="noopener" class="social-icon" title="Follow on Twitter/X">
+            <img src="icons/twitter.png" alt="Twitter/X social platform icon" width="24" height="24" loading="lazy">
         </a>
     </div>
 
     <!-- Theme Toggle -->
-    <div class="theme-toggle">
+    <div class="theme-toggle" role="button" aria-label="Toggle dark/light theme">
         <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"></path></svg>
         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
     </div>
 
     <!-- Main Content -->
-    <main>
+    <main role="main">
         <!-- Hero Section -->
         <section id="home" class="hero-section">
             <div class="content-wrapper">
@@ -217,7 +294,7 @@
                     </div>
                     <div class="about-image scroll-animate" data-animation="slideRight" data-delay="0.4">
                         <div class="image-container">
-                            <img src="icons/logo-rotate.png" alt="Zowi Graphics Team">
+                            <img src="icons/logo-rotate.png" alt="Zowi Graphics rotating logo animation" width="300" height="300" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -229,48 +306,48 @@
             <div class="content-wrapper">
                 <h2 class="section-title scroll-animate" data-animation="fadeInUp" data-delay="0.2">Our <span class="highlight">Services</span></h2>
                 <div class="services-grid">
-                    <div class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.1">
+                    <article class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.1">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                         </div>
                         <h3>Logo and Branding</h3>
                         <p>Logo design, color palettes, typography, and comprehensive brand guidelines to establish a cohesive visual identity.</p>
-                    </div>
-                    <div class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.2">
+                    </article>
+                    <article class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.2">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                         </div>
                         <h3>Web Development</h3>
                         <p>Create a website that is visually stunning, user-friendly, and optimized for all devices and screen sizes.</p>
-                    </div>
-                    <div class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.3">
+                    </article>
+                    <article class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.3">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                         </div>
                         <h3>UI/UX Design</h3>
                         <p>Intuitive user interfaces and seamless user experiences that enhance engagement and conversion rates.</p>
-                    </div>
-                    <div class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.4">
+                    </article>
+                    <article class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.4">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                         </div>
                         <h3>Packaging Design</h3>
                         <p>We create eye-catching and functional packaging that reflects your brand identity and attracts customers.</p>
-                    </div>
-                    <div class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.5">
+                    </article>
+                    <article class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.5">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                         </div>
                         <h3>Social-Media Post Design</h3>
                         <p>creative graphics and content strategies tailored for different social media platforms to boost engagement.</p>
-                    </div>
-                    <div class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.6">
+                    </article>
+                    <article class="service-card scroll-animate" data-animation="fadeInUp" data-delay="0.6">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                         </div>
                         <h3>Print-Media Design</h3>
                         <p>Business cards, brochures, magazine, and other print materials designed with attention to detail and quality.</p>
-                    </div>
+                    </article>
                 </div>
             </div>
         </section>
@@ -280,77 +357,77 @@
             <div class="content-wrapper">
                 <h2 class="section-title scroll-animate" data-animation="fadeInUp" data-delay="0.2">Logo <span class="highlight">Designs</span></h2>
                 <div class="design-gallery">
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.1" data-id="design1">
-                        <img src="design/enda-thumbnail.webp" alt="Logo Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.1" data-id="design1">
+                        <img src="design/enda-thumbnail.webp" alt="Enda General Trading logo design - modern business branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Enda General Trading</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.2" data-id="design2">
-                        <img src="design/biruk-thumbnail.webp" alt="Website Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.2" data-id="design2">
+                        <img src="design/biruk-thumbnail.webp" alt="Biruk Supermarket logo design - retail brand identity" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Biruk Supermarket</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.3" data-id="design3">
-                        <img src="design/semida-thumbnail.webp" alt="Packaging Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.3" data-id="design3">
+                        <img src="design/semida-thumbnail.webp" alt="Semida Auto-Refinish logo design - automotive service branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Semida Auto-Refinish</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.4" data-id="design4">
-                        <img src="design/vision-thumbnail.webp" alt="Social Media Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.4" data-id="design4">
+                        <img src="design/vision-thumbnail.webp" alt="Vision-Craft Engineering logo design - engineering company branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Vission-Craft Engineering</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.5" data-id="design5">
-                        <img src="design/space-thumbnail.webp" alt="Mobile App Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.5" data-id="design5">
+                        <img src="design/space-thumbnail.webp" alt="Space Properties logo design - real estate brand identity" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Space Properties</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.6" data-id="design6">
-                        <img src="design/kmc-thumbnail.webp" alt="Branding Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.6" data-id="design6">
+                        <img src="design/kmc-thumbnail.webp" alt="Kaleb Medium Clinic logo design - healthcare branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Kaleb Medium Clinic</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.7" data-id="design7">
-                        <img src="design/mayoha-thumbnail.webp" alt="Social Media Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.7" data-id="design7">
+                        <img src="design/mayoha-thumbnail.webp" alt="Mayoha Trading Plc logo design - trading company branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Mayoha Trading Plc</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.8" data-id="design8">
-                        <img src="design/aesthetic-thumbnail.webp" alt="Social Media Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.8" data-id="design8">
+                        <img src="design/aesthetic-thumbnail.webp" alt="Aesthetic Interior logo design - interior design branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Aesthetic Interior</p>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.9" data-id="design9">
-                        <img src="design/altitude-thumbnail.webp" alt="Social Media Design">
+                    <article class="design-item scroll-animate" data-animation="zoomIn" data-delay="0.9" data-id="design9">
+                        <img src="design/altitude-thumbnail.webp" alt="Altitude Construction logo design - construction company branding" width="300" height="200" loading="lazy">
                         <div class="design-overlay">
                             <h3>Logo Design</h3>
                             <p>Altitude Construction</p>
                         </div>
-                    </div>
+                    </article>
                 </div>
                 
                 <div class="center-button scroll-animate" data-animation="fadeInUp" data-delay="0.3">
@@ -364,26 +441,26 @@
             <div class="content-wrapper">
                 <h2 class="section-title scroll-animate" data-animation="fadeInUp" data-delay="0.2">Featured <span class="highlight">Projects</span></h2>
                 <div class="projects-grid">
-                    <div class="project-card scroll-animate" data-animation="slideLeft" data-delay="0.3">
+                    <article class="project-card scroll-animate" data-animation="slideLeft" data-delay="0.3">
                         <div class="project-image">
-                            <img src="assets/logo-thumbnail.jpg" alt="Project 1">
+                            <img src="assets/logo-thumbnail.jpg" alt="Logo and branding project showcase" width="400" height="250" loading="lazy">
                         </div>
                         <div class="project-info">
                             <h3>Logo and Branding</h3>
                             <p>We create simple, modern, and memorable brand identities. From logo design to full branding systems, we help you stand out and connect with your audience.</p>
                             <a href="#" class="project-link" data-project="project1">View Case Study</a>
                         </div>
-                    </div>
-                    <div class="project-card scroll-animate" data-animation="slideLeft" data-delay="0.5">
+                    </article>
+                    <article class="project-card scroll-animate" data-animation="slideLeft" data-delay="0.5">
                         <div class="project-image">
-                            <img src="assets/web-thumbnail.jpg" alt="Project 3">
+                            <img src="assets/web-thumbnail.jpg" alt="Web development project showcase" width="400" height="250" loading="lazy">
                         </div>
                         <div class="project-info">
                             <h3>Web Development</h3>
                             <p>We build responsive, fast, and modern websites that look great on all devices. Our code brings your design to life with clean structure and smooth user interaction</p>
                             <a href="#" class="project-link" data-project="project3">View Case Study</a>
                         </div>
-                    </div>
+                    </article>
                 </div>
             </div>
         </section>
@@ -397,31 +474,35 @@
                         <p>Ready to start your project? Contact us today to discuss your design needs and how we can help bring your vision to life.</p>
                         <div class="contact-details">
                             <div class="contact-item">
-                                <img src="icons/phone.png" alt="Phone" width="24" height="24">
+                                <img src="icons/phone.png" alt="Phone contact icon" width="24" height="24" loading="lazy">
                                 <span>+251-947580700</span>
                             </div>
                             <div class="contact-item">
-                                <img src="icons/email.png" alt="Email" width="24" height="24">
+                                <img src="icons/email.png" alt="Email contact icon" width="24" height="24" loading="lazy">
                                 <span>hello@zowigraphics.com</span>
                             </div>
                             <div class="contact-item">
-                                <img src="icons/location.png" alt="Location" width="24" height="24">
+                                <img src="icons/location.png" alt="Location pin icon" width="24" height="24" loading="lazy">
                                 <span>Addis Ababa, Ethiopia</span>
                             </div>
                         </div>
                     </div>
-                    <form class="contact-form scroll-animate" data-animation="slideRight" data-delay="0.4" id="contactForm">
+                    <form class="contact-form scroll-animate" data-animation="slideRight" data-delay="0.4" id="contactForm" role="form" aria-label="Contact form">
                         <div class="form-group">
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                            <label for="name" class="sr-only">Your Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required aria-required="true">
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
+                            <label for="email" class="sr-only">Your Email</label>
+                            <input type="email" id="email" name="email" placeholder="Your Email" required aria-required="true">
                         </div>
                         <div class="form-group">
-                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                            <label for="subject" class="sr-only">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Subject" required aria-required="true">
                         </div>
                         <div class="form-group">
-                            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                            <label for="message" class="sr-only">Your Message</label>
+                            <textarea id="message" name="message" placeholder="Your Message" required aria-required="true"></textarea>
                         </div>
                         <button type="submit" class="btn primary-btn">Send Message</button>
                     </form>
@@ -431,40 +512,40 @@
     </main>
 
     <!-- Footer -->
-    <footer class="scroll-animate" data-animation="fadeInUp">
+    <footer class="scroll-animate" data-animation="fadeInUp" role="contentinfo">
         <div class="footer-content">
-            <div class="footer-links">
+            <nav class="footer-links" role="navigation" aria-label="Footer navigation">
                 <a href="#home">Home</a>
                 <a href="#about">About</a>
                 <a href="#services">Services</a>
                 <a href="#design">Design</a>
                 <a href="#project">Project</a>
-            </div>
+            </nav>
         </div>
         <div class="copyright">
             <p>&copy; 2025 Zowi Graphics. All rights reserved.</p>
         </div>
-        <button id="scroll-top" class="scroll-top">
+        <button id="scroll-top" class="scroll-top" aria-label="Scroll to top">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg>
         </button>
     </footer>
 
     <!-- Design Gallery Modals -->
-    <div class="modal-container" id="design-modal">
+    <div class="modal-container" id="design-modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
         <div class="modal modern-gallery">
             <div class="modal-header">
-                <h2 class="modal-title">Design Gallery</h2>
-                <button class="modal-close">&times;</button>
+                <h2 class="modal-title" id="modal-title">Design Gallery</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
             </div>
             <div class="modal-content">
                 <div class="gallery-container">
                     <div class="gallery-main">
-                        <img src="placeholder.png" alt="Gallery Image" id="gallery-main-image">
+                        <img src="placeholder.png" alt="Gallery Image" id="gallery-main-image" width="600" height="400">
                         <div class="gallery-navigation">
-                            <button class="gallery-nav prev">
+                            <button class="gallery-nav prev" aria-label="Previous image">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
                             </button>
-                            <button class="gallery-nav next">
+                            <button class="gallery-nav next" aria-label="Next image">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
                             </button>
                         </div>
@@ -487,11 +568,11 @@
     </div>
 
     <!-- Project Case Study Modals -->
-    <div class="modal-container" id="project-modal">
+    <div class="modal-container" id="project-modal" role="dialog" aria-labelledby="project-modal-title" aria-hidden="true">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">Project Case Study</h2>
-                <button class="modal-close">&times;</button>
+                <h2 class="modal-title" id="project-modal-title">Project Case Study</h2>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
             </div>
             <div class="modal-content">
                 <div class="case-study-container">
@@ -521,51 +602,6 @@
         </div>
     </div>
 
-    <!-- Sitemap for SEO -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://nathnaeldesta7.github.io/zowi-website/#home"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "About",
-          "item": "https://nathnaeldesta7.github.io/zowi-website/#about"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Services",
-          "item": "https://nathnaeldesta7.github.io/zowi-website/#services"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "Design",
-          "item": "https://nathnaeldesta7.github.io/zowi-website/#design"
-        },
-        {
-          "@type": "ListItem",
-          "position": 5,
-          "name": "Projects",
-          "item": "https://nathnaeldesta7.github.io/zowi-website/#project"
-        },
-        {
-          "@type": "ListItem",
-          "position": 6,
-          "name": "Contact",
-          "item": "https://nathnaeldesta7.github.io/zowi-website/#contact"
-        }
-      ]
-    }
-    </script>
     <script src="JavaScript/script.js"></script>
 </body>
 </html>
