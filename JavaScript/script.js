@@ -109,72 +109,241 @@ function initializeMobileElements() {
   }
 }
 
-// FIXED: Enhanced Scroll Animation System with proper image loading management
+// FIXED: Immediate Image Loading Manager for Fast Scrolling
+class ImmediateImageLoader {
+  constructor() {
+    this.loadedImages = new Set()
+    this.imageCache = new Map()
+    this.init()
+  }
+
+  init() {
+    this.preloadAllImages()
+    this.setupImmediateVisibility()
+    this.setupFastScrollHandler()
+  }
+
+  // FIXED: Preload ALL images immediately and cache them
+  preloadAllImages() {
+    const allImages = document.querySelectorAll("img")
+
+    allImages.forEach((img) => {
+      // Make images immediately visible
+      img.style.opacity = "1"
+      img.style.visibility = "visible"
+      img.style.display = "block"
+
+      // If image is already loaded, mark it
+      if (img.complete && img.naturalHeight !== 0) {
+        this.loadedImages.add(img.src)
+        this.imageCache.set(img.src, img)
+        return
+      }
+
+      // For images not yet loaded, preload them
+      const preloadImg = new Image()
+      preloadImg.onload = () => {
+        this.loadedImages.add(img.src)
+        this.imageCache.set(img.src, img)
+        img.style.opacity = "1"
+        img.style.visibility = "visible"
+      }
+      preloadImg.onerror = () => {
+        console.warn("Failed to preload image:", img.src)
+      }
+      preloadImg.src = img.src
+    })
+  }
+
+  // FIXED: Setup immediate visibility for all images
+  setupImmediateVisibility() {
+    const designImages = document.querySelectorAll(".design-item img, .project-image img, .about-image img")
+
+    designImages.forEach((img) => {
+      // Force immediate visibility
+      img.style.cssText = `
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        transition: transform 0.3s ease !important;
+      `
+
+      // Add to loaded set
+      this.loadedImages.add(img.src)
+      this.imageCache.set(img.src, img)
+    })
+  }
+
+  // FIXED: Handle fast scrolling with immediate image visibility
+  setupFastScrollHandler() {
+    let fastScrollTimeout
+    let isScrolling = false
+
+    const handleFastScroll = () => {
+      isScrolling = true
+
+      // Immediately show all images during fast scrolling
+      const allImages = document.querySelectorAll("img")
+      allImages.forEach((img) => {
+        img.style.opacity = "1"
+        img.style.visibility = "visible"
+        this.loadedImages.add(img.src)
+      })
+
+      // Clear existing timeout
+      clearTimeout(fastScrollTimeout)
+
+      // Set timeout to detect when scrolling stops
+      fastScrollTimeout = setTimeout(() => {
+        isScrolling = false
+      }, 150)
+    }
+
+    // Listen for scroll events with immediate response
+    window.addEventListener("scroll", handleFastScroll, { passive: true })
+
+    // Also listen for wheel events for even faster response
+    window.addEventListener("wheel", handleFastScroll, { passive: true })
+
+    // Touch events for mobile fast scrolling
+    window.addEventListener("touchmove", handleFastScroll, { passive: true })
+  }
+
+  // Method to ensure an image is visible
+  ensureImageVisible(img) {
+    if (img && img.tagName === "IMG") {
+      img.style.opacity = "1"
+      img.style.visibility = "visible"
+      img.style.display = "block"
+      this.loadedImages.add(img.src)
+    }
+  }
+}
+
+// FIXED: Enhanced Scroll Animation System optimized for fast scrolling
 class ScrollAnimationManager {
   constructor() {
     this.animatedElements = new Set()
-    this.loadedImages = new Set() // Track loaded images to prevent reloading
+    this.loadedImages = new Set()
+    this.isScrolling = false
+    this.scrollTimeout = null
+
+    // FIXED: More aggressive observer settings for fast scrolling
     this.observerOptions = {
       root: null,
-      rootMargin: "-10% 0px -10% 0px",
-      threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
+      rootMargin: "50px 0px 50px 0px", // Larger margin for faster detection
+      threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0], // More threshold points
     }
     this.init()
   }
 
   init() {
     this.createObserver()
-    this.preloadCriticalImages() // Preload important images
+    this.setupFastScrollDetection()
     this.observeElements()
     this.addScrollListener()
   }
 
-  // FIXED: Preload critical images to prevent loading issues
-  preloadCriticalImages() {
-    const criticalImages = document.querySelectorAll(".design-item img, .project-image img")
-    criticalImages.forEach((img) => {
-      if (!this.loadedImages.has(img.src)) {
-        // Create a new image object to preload
-        const preloadImg = new Image()
-        preloadImg.onload = () => {
-          this.loadedImages.add(img.src)
-          img.style.opacity = "1"
-        }
-        preloadImg.onerror = () => {
-          console.warn("Failed to preload image:", img.src)
-        }
-        preloadImg.src = img.src
+  // FIXED: Detect fast scrolling and handle accordingly
+  setupFastScrollDetection() {
+    let lastScrollTime = 0
+    let lastScrollTop = 0
+
+    const detectFastScroll = () => {
+      const currentTime = Date.now()
+      const currentScrollTop = window.pageYOffset
+      const timeDiff = currentTime - lastScrollTime
+      const scrollDiff = Math.abs(currentScrollTop - lastScrollTop)
+
+      // If scrolling fast (more than 100px in less than 50ms)
+      if (timeDiff < 50 && scrollDiff > 100) {
+        this.handleFastScroll()
+      }
+
+      lastScrollTime = currentTime
+      lastScrollTop = currentScrollTop
+    }
+
+    window.addEventListener("scroll", detectFastScroll, { passive: true })
+  }
+
+  // FIXED: Handle fast scrolling by immediately showing all images
+  handleFastScroll() {
+    this.isScrolling = true
+
+    // Immediately show all images in viewport and nearby
+    const allImages = document.querySelectorAll(".design-item img, .project-image img")
+    allImages.forEach((img) => {
+      const rect = img.getBoundingClientRect()
+      const isNearViewport = rect.top < window.innerHeight + 200 && rect.bottom > -200
+
+      if (isNearViewport) {
+        img.style.opacity = "1"
+        img.style.visibility = "visible"
+        img.style.transform = "none"
+        this.loadedImages.add(img.src)
       }
     })
+
+    // Clear existing timeout
+    clearTimeout(this.scrollTimeout)
+
+    // Reset scrolling flag after scrolling stops
+    this.scrollTimeout = setTimeout(() => {
+      this.isScrolling = false
+    }, 100)
   }
 
   createObserver() {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        // FIXED: Only animate once and don't interfere with loaded images
-        if (entry.isIntersecting && !this.animatedElements.has(entry.target)) {
-          this.animateElement(entry.target)
+        // FIXED: Handle both fast and normal scrolling
+        if (entry.isIntersecting) {
+          // Immediately show images during fast scrolling
+          if (this.isScrolling) {
+            this.immediatelyShowElement(entry.target)
+          } else if (!this.animatedElements.has(entry.target)) {
+            this.animateElement(entry.target)
+          }
+
           this.animatedElements.add(entry.target)
 
-          // Ensure images in this element stay loaded
+          // Ensure all images in this element are visible
           const images = entry.target.querySelectorAll("img")
           images.forEach((img) => {
-            if (img.complete && img.naturalHeight !== 0) {
-              this.loadedImages.add(img.src)
-              img.style.opacity = "1"
-            }
+            img.style.opacity = "1"
+            img.style.visibility = "visible"
+            this.loadedImages.add(img.src)
           })
         }
-        // FIXED: Don't unobserve or modify already animated elements
       })
     }, this.observerOptions)
+  }
+
+  // FIXED: Immediately show element without animation for fast scrolling
+  immediatelyShowElement(element) {
+    element.style.opacity = "1"
+    element.style.transform = "translateY(0) translateX(0) scale(1) rotate(0) rotateX(0) rotateY(0)"
+    element.style.visibility = "visible"
+    element.classList.add("animated")
+
+    // Immediately show all images in the element
+    const images = element.querySelectorAll("img")
+    images.forEach((img) => {
+      img.style.opacity = "1"
+      img.style.visibility = "visible"
+      img.style.display = "block"
+      this.loadedImages.add(img.src)
+    })
   }
 
   observeElements() {
     const elementsToAnimate = document.querySelectorAll(".scroll-animate")
     elementsToAnimate.forEach((element) => {
-      // Set initial state
-      this.setInitialState(element)
+      // FIXED: Don't set initial hidden state for images during fast scroll
+      if (!this.isScrolling) {
+        this.setInitialState(element)
+      }
       this.observer.observe(element)
     })
   }
@@ -182,11 +351,13 @@ class ScrollAnimationManager {
   setInitialState(element) {
     const animation = element.dataset.animation || "fadeInUp"
 
-    // FIXED: Don't modify images that are already loaded
+    // FIXED: Don't hide images that should be immediately visible
     const images = element.querySelectorAll("img")
     images.forEach((img) => {
-      if (this.loadedImages.has(img.src)) {
-        return // Skip already loaded images
+      if (this.loadedImages.has(img.src) || this.isScrolling) {
+        img.style.opacity = "1"
+        img.style.visibility = "visible"
+        return
       }
     })
 
@@ -242,37 +413,36 @@ class ScrollAnimationManager {
   animateElement(element) {
     const delay = Number.parseFloat(element.dataset.delay) || 0
 
+    // FIXED: Reduce delay during fast scrolling
+    const actualDelay = this.isScrolling ? 0 : delay * 1000
+
     setTimeout(() => {
       element.style.opacity = "1"
       element.style.transform = "translateY(0) translateX(0) scale(1) rotate(0) rotateX(0) rotateY(0)"
-
-      // Add a class for additional CSS animations if needed
       element.classList.add("animated")
 
-      // FIXED: Ensure images in animated elements remain visible
+      // FIXED: Ensure images stay visible
       const images = element.querySelectorAll("img")
       images.forEach((img) => {
         img.style.opacity = "1"
+        img.style.visibility = "visible"
         this.loadedImages.add(img.src)
       })
 
-      // Trigger any custom animations
       this.triggerCustomAnimation(element)
-    }, delay * 1000)
+    }, actualDelay)
   }
 
   triggerCustomAnimation(element) {
     const animation = element.dataset.animation
 
-    // Add specific animation classes for complex animations
-    if (animation === "zoomIn") {
+    if (animation === "zoomIn" && !this.isScrolling) {
       element.style.transform = "scale(1.05)"
       setTimeout(() => {
         element.style.transform = "scale(1)"
       }, 200)
     }
 
-    // Stagger children animations for containers
     if (
       element.classList.contains("services-grid") ||
       element.classList.contains("design-gallery") ||
@@ -286,17 +456,18 @@ class ScrollAnimationManager {
     const children = container.children
     Array.from(children).forEach((child, index) => {
       if (!child.classList.contains("scroll-animate")) {
+        const delay = this.isScrolling ? 0 : index * 100
         setTimeout(() => {
           child.style.opacity = "1"
           child.style.transform = "translateY(0)"
 
-          // FIXED: Ensure child images stay loaded
           const images = child.querySelectorAll("img")
           images.forEach((img) => {
             img.style.opacity = "1"
+            img.style.visibility = "visible"
             this.loadedImages.add(img.src)
           })
-        }, index * 100)
+        }, delay)
       }
     })
   }
@@ -338,77 +509,10 @@ class ScrollAnimationManager {
   }
 }
 
-// FIXED: Image Loading Manager to ensure images load once and stay loaded
-class ImageLoadingManager {
-  constructor() {
-    this.loadedImages = new Set()
-    this.init()
-  }
-
-  init() {
-    this.setupImageLoading()
-    this.preventImageReloading()
-  }
-
-  setupImageLoading() {
-    const allImages = document.querySelectorAll("img")
-    allImages.forEach((img) => {
-      // Skip if already processed
-      if (img.dataset.processed) return
-
-      img.dataset.processed = "true"
-
-      // If image is already loaded
-      if (img.complete && img.naturalHeight !== 0) {
-        this.loadedImages.add(img.src)
-        img.style.opacity = "1"
-        return
-      }
-
-      // Set up loading handlers
-      img.addEventListener(
-        "load",
-        () => {
-          this.loadedImages.add(img.src)
-          img.style.opacity = "1"
-        },
-        { once: true },
-      )
-
-      img.addEventListener(
-        "error",
-        () => {
-          console.warn("Failed to load image:", img.src)
-        },
-        { once: true },
-      )
-    })
-  }
-
-  preventImageReloading() {
-    // Use MutationObserver to watch for any attempts to modify loaded images
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === "attributes" && mutation.attributeName === "src") {
-          const img = mutation.target
-          if (this.loadedImages.has(img.src)) {
-            img.style.opacity = "1"
-          }
-        }
-      })
-    })
-
-    // Observe all images for src changes
-    document.querySelectorAll("img").forEach((img) => {
-      observer.observe(img, { attributes: true, attributeFilter: ["src"] })
-    })
-  }
-}
-
-// Initialize scroll animation manager, image loading manager, and mobile elements
+// Initialize both systems
 document.addEventListener("DOMContentLoaded", () => {
+  new ImmediateImageLoader() // FIXED: Load this first for immediate image visibility
   new ScrollAnimationManager()
-  new ImageLoadingManager() // FIXED: Add image loading manager
   document.body.classList.add("loaded")
 
   // Initialize mobile elements immediately
