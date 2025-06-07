@@ -109,257 +109,46 @@ function initializeMobileElements() {
   }
 }
 
-// FIXED: Immediate Image Loading Manager for Fast Scrolling
-class ImmediateImageLoader {
-  constructor() {
-    this.loadedImages = new Set()
-    this.imageCache = new Map()
-    this.init()
-  }
-
-  init() {
-    this.preloadAllImages()
-    this.setupImmediateVisibility()
-    this.setupFastScrollHandler()
-  }
-
-  // FIXED: Preload ALL images immediately and cache them
-  preloadAllImages() {
-    const allImages = document.querySelectorAll("img")
-
-    allImages.forEach((img) => {
-      // Make images immediately visible
-      img.style.opacity = "1"
-      img.style.visibility = "visible"
-      img.style.display = "block"
-
-      // If image is already loaded, mark it
-      if (img.complete && img.naturalHeight !== 0) {
-        this.loadedImages.add(img.src)
-        this.imageCache.set(img.src, img)
-        return
-      }
-
-      // For images not yet loaded, preload them
-      const preloadImg = new Image()
-      preloadImg.onload = () => {
-        this.loadedImages.add(img.src)
-        this.imageCache.set(img.src, img)
-        img.style.opacity = "1"
-        img.style.visibility = "visible"
-      }
-      preloadImg.onerror = () => {
-        console.warn("Failed to preload image:", img.src)
-      }
-      preloadImg.src = img.src
-    })
-  }
-
-  // FIXED: Setup immediate visibility for all images
-  setupImmediateVisibility() {
-    const designImages = document.querySelectorAll(".design-item img, .project-image img, .about-image img")
-
-    designImages.forEach((img) => {
-      // Force immediate visibility
-      img.style.cssText = `
-        opacity: 1 !important;
-        visibility: visible !important;
-        display: block !important;
-        transition: transform 0.3s ease !important;
-      `
-
-      // Add to loaded set
-      this.loadedImages.add(img.src)
-      this.imageCache.set(img.src, img)
-    })
-  }
-
-  // FIXED: Handle fast scrolling with immediate image visibility
-  setupFastScrollHandler() {
-    let fastScrollTimeout
-    let isScrolling = false
-
-    const handleFastScroll = () => {
-      isScrolling = true
-
-      // Immediately show all images during fast scrolling
-      const allImages = document.querySelectorAll("img")
-      allImages.forEach((img) => {
-        img.style.opacity = "1"
-        img.style.visibility = "visible"
-        this.loadedImages.add(img.src)
-      })
-
-      // Clear existing timeout
-      clearTimeout(fastScrollTimeout)
-
-      // Set timeout to detect when scrolling stops
-      fastScrollTimeout = setTimeout(() => {
-        isScrolling = false
-      }, 150)
-    }
-
-    // Listen for scroll events with immediate response
-    window.addEventListener("scroll", handleFastScroll, { passive: true })
-
-    // Also listen for wheel events for even faster response
-    window.addEventListener("wheel", handleFastScroll, { passive: true })
-
-    // Touch events for mobile fast scrolling
-    window.addEventListener("touchmove", handleFastScroll, { passive: true })
-  }
-
-  // Method to ensure an image is visible
-  ensureImageVisible(img) {
-    if (img && img.tagName === "IMG") {
-      img.style.opacity = "1"
-      img.style.visibility = "visible"
-      img.style.display = "block"
-      this.loadedImages.add(img.src)
-    }
-  }
-}
-
-// FIXED: Enhanced Scroll Animation System optimized for fast scrolling
+// Enhanced Scroll Animation System
 class ScrollAnimationManager {
   constructor() {
     this.animatedElements = new Set()
-    this.loadedImages = new Set()
-    this.isScrolling = false
-    this.scrollTimeout = null
-
-    // FIXED: More aggressive observer settings for fast scrolling
     this.observerOptions = {
       root: null,
-      rootMargin: "50px 0px 50px 0px", // Larger margin for faster detection
-      threshold: [0, 0.1, 0.25, 0.5, 0.75, 1.0], // More threshold points
+      rootMargin: "-10% 0px -10% 0px",
+      threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
     }
     this.init()
   }
 
   init() {
     this.createObserver()
-    this.setupFastScrollDetection()
     this.observeElements()
     this.addScrollListener()
-  }
-
-  // FIXED: Detect fast scrolling and handle accordingly
-  setupFastScrollDetection() {
-    let lastScrollTime = 0
-    let lastScrollTop = 0
-
-    const detectFastScroll = () => {
-      const currentTime = Date.now()
-      const currentScrollTop = window.pageYOffset
-      const timeDiff = currentTime - lastScrollTime
-      const scrollDiff = Math.abs(currentScrollTop - lastScrollTop)
-
-      // If scrolling fast (more than 100px in less than 50ms)
-      if (timeDiff < 50 && scrollDiff > 100) {
-        this.handleFastScroll()
-      }
-
-      lastScrollTime = currentTime
-      lastScrollTop = currentScrollTop
-    }
-
-    window.addEventListener("scroll", detectFastScroll, { passive: true })
-  }
-
-  // FIXED: Handle fast scrolling by immediately showing all images
-  handleFastScroll() {
-    this.isScrolling = true
-
-    // Immediately show all images in viewport and nearby
-    const allImages = document.querySelectorAll(".design-item img, .project-image img")
-    allImages.forEach((img) => {
-      const rect = img.getBoundingClientRect()
-      const isNearViewport = rect.top < window.innerHeight + 200 && rect.bottom > -200
-
-      if (isNearViewport) {
-        img.style.opacity = "1"
-        img.style.visibility = "visible"
-        img.style.transform = "none"
-        this.loadedImages.add(img.src)
-      }
-    })
-
-    // Clear existing timeout
-    clearTimeout(this.scrollTimeout)
-
-    // Reset scrolling flag after scrolling stops
-    this.scrollTimeout = setTimeout(() => {
-      this.isScrolling = false
-    }, 100)
   }
 
   createObserver() {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        // FIXED: Handle both fast and normal scrolling
-        if (entry.isIntersecting) {
-          // Immediately show images during fast scrolling
-          if (this.isScrolling) {
-            this.immediatelyShowElement(entry.target)
-          } else if (!this.animatedElements.has(entry.target)) {
-            this.animateElement(entry.target)
-          }
-
+        if (entry.isIntersecting && !this.animatedElements.has(entry.target)) {
+          this.animateElement(entry.target)
           this.animatedElements.add(entry.target)
-
-          // Ensure all images in this element are visible
-          const images = entry.target.querySelectorAll("img")
-          images.forEach((img) => {
-            img.style.opacity = "1"
-            img.style.visibility = "visible"
-            this.loadedImages.add(img.src)
-          })
         }
       })
     }, this.observerOptions)
   }
 
-  // FIXED: Immediately show element without animation for fast scrolling
-  immediatelyShowElement(element) {
-    element.style.opacity = "1"
-    element.style.transform = "translateY(0) translateX(0) scale(1) rotate(0) rotateX(0) rotateY(0)"
-    element.style.visibility = "visible"
-    element.classList.add("animated")
-
-    // Immediately show all images in the element
-    const images = element.querySelectorAll("img")
-    images.forEach((img) => {
-      img.style.opacity = "1"
-      img.style.visibility = "visible"
-      img.style.display = "block"
-      this.loadedImages.add(img.src)
-    })
-  }
-
   observeElements() {
     const elementsToAnimate = document.querySelectorAll(".scroll-animate")
     elementsToAnimate.forEach((element) => {
-      // FIXED: Don't set initial hidden state for images during fast scroll
-      if (!this.isScrolling) {
-        this.setInitialState(element)
-      }
+      // Set initial state
+      this.setInitialState(element)
       this.observer.observe(element)
     })
   }
 
   setInitialState(element) {
     const animation = element.dataset.animation || "fadeInUp"
-
-    // FIXED: Don't hide images that should be immediately visible
-    const images = element.querySelectorAll("img")
-    images.forEach((img) => {
-      if (this.loadedImages.has(img.src) || this.isScrolling) {
-        img.style.opacity = "1"
-        img.style.visibility = "visible"
-        return
-      }
-    })
 
     switch (animation) {
       case "fadeInUp":
@@ -413,36 +202,30 @@ class ScrollAnimationManager {
   animateElement(element) {
     const delay = Number.parseFloat(element.dataset.delay) || 0
 
-    // FIXED: Reduce delay during fast scrolling
-    const actualDelay = this.isScrolling ? 0 : delay * 1000
-
     setTimeout(() => {
       element.style.opacity = "1"
       element.style.transform = "translateY(0) translateX(0) scale(1) rotate(0) rotateX(0) rotateY(0)"
+
+      // Add a class for additional CSS animations if needed
       element.classList.add("animated")
 
-      // FIXED: Ensure images stay visible
-      const images = element.querySelectorAll("img")
-      images.forEach((img) => {
-        img.style.opacity = "1"
-        img.style.visibility = "visible"
-        this.loadedImages.add(img.src)
-      })
-
+      // Trigger any custom animations
       this.triggerCustomAnimation(element)
-    }, actualDelay)
+    }, delay * 1000)
   }
 
   triggerCustomAnimation(element) {
     const animation = element.dataset.animation
 
-    if (animation === "zoomIn" && !this.isScrolling) {
+    // Add specific animation classes for complex animations
+    if (animation === "zoomIn") {
       element.style.transform = "scale(1.05)"
       setTimeout(() => {
         element.style.transform = "scale(1)"
       }, 200)
     }
 
+    // Stagger children animations for containers
     if (
       element.classList.contains("services-grid") ||
       element.classList.contains("design-gallery") ||
@@ -456,18 +239,10 @@ class ScrollAnimationManager {
     const children = container.children
     Array.from(children).forEach((child, index) => {
       if (!child.classList.contains("scroll-animate")) {
-        const delay = this.isScrolling ? 0 : index * 100
         setTimeout(() => {
           child.style.opacity = "1"
           child.style.transform = "translateY(0)"
-
-          const images = child.querySelectorAll("img")
-          images.forEach((img) => {
-            img.style.opacity = "1"
-            img.style.visibility = "visible"
-            this.loadedImages.add(img.src)
-          })
-        }, delay)
+        }, index * 100)
       }
     })
   }
@@ -509,9 +284,8 @@ class ScrollAnimationManager {
   }
 }
 
-// Initialize both systems
+// Initialize scroll animation manager and mobile elements
 document.addEventListener("DOMContentLoaded", () => {
-  new ImmediateImageLoader() // FIXED: Load this first for immediate image visibility
   new ScrollAnimationManager()
   document.body.classList.add("loaded")
 
@@ -655,14 +429,14 @@ function setActiveNavLink() {
 
 window.addEventListener("scroll", setActiveNavLink)
 
-// FIXED: Enhanced Show/Hide Sidebars on Mobile with smooth sliding animation
+// FIXED: Enhanced Show/Hide Sidebars on Mobile with complete hiding
 let lastScrollTop = 0
 let scrollTimeout = null
 
 window.addEventListener("scroll", () => {
   const scrollTop = window.scrollY
 
-  // Only apply sidebar sliding on mobile
+  // Only apply sidebar hiding on mobile
   if (window.innerWidth <= 768) {
     // Clear any existing timeout
     if (scrollTimeout) {
@@ -672,11 +446,11 @@ window.addEventListener("scroll", () => {
     // Add a small delay to prevent flickering during fast scrolling
     scrollTimeout = setTimeout(() => {
       if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Scrolling down - smoothly slide sidebars out
+        // Scrolling down - hide sidebars completely
         if (leftSidebar) {
           leftSidebar.classList.remove("active")
           leftSidebar.style.cssText = `
-            width: 60px !important;
+            width: 0 !important;
             opacity: 0 !important;
             visibility: hidden !important;
             transform: translateX(-100%) !important;
@@ -687,7 +461,7 @@ window.addEventListener("scroll", () => {
         if (rightSidebar) {
           rightSidebar.classList.remove("active")
           rightSidebar.style.cssText = `
-            width: 60px !important;
+            width: 0 !important;
             opacity: 0 !important;
             visibility: hidden !important;
             transform: translateX(100%) !important;
@@ -696,7 +470,7 @@ window.addEventListener("scroll", () => {
           `
         }
       } else if (scrollTop < lastScrollTop) {
-        // Scrolling up - smoothly slide sidebars in
+        // Scrolling up - show sidebars
         if (leftSidebar) {
           leftSidebar.classList.add("active")
           leftSidebar.style.cssText = `
@@ -988,14 +762,10 @@ const designGalleryData = {
   ...additionalDesigns,
 }
 
-// FIXED: Modern gallery functionality with proper event binding
+// Modern gallery functionality
 designItems.forEach((item) => {
-  // Make sure the item is clickable by adding pointer cursor
-  item.style.cursor = "pointer"
-
-  // Add click event listener with proper binding
-  item.addEventListener("click", function () {
-    const designId = this.getAttribute("data-id")
+  item.addEventListener("click", () => {
+    const designId = item.getAttribute("data-id")
     const designData = designGalleryData[designId]
 
     if (designData && designModal) {
@@ -1025,18 +795,7 @@ designItems.forEach((item) => {
 
           thumbnail.appendChild(thumbnailImg)
           galleryThumbnails.appendChild(thumbnail)
-
-          // Add click event to each thumbnail
-          thumbnail.addEventListener("click", () => {
-            changeGalleryImage(image, index, designData.title)
-          })
         })
-      }
-
-      // Set initial main image
-      if (galleryMainImage) {
-        galleryMainImage.src = designData.images[0]
-        galleryMainImage.alt = `${designData.title} - Image 1`
       }
 
       // Open modal with fade-in effect
@@ -1101,7 +860,7 @@ function changeGalleryImage(image, index, title) {
   }
 }
 
-// FIXED: Improved gallery navigation setup with proper event binding
+// In the setupGalleryNavigation function, modify it to add PDF-like scrolling behavior
 function setupGalleryNavigation(designData) {
   const prevBtn = document.querySelector(".gallery-nav.prev")
   const nextBtn = document.querySelector(".gallery-nav.next")
@@ -1139,13 +898,9 @@ function setupGalleryNavigation(designData) {
   const totalImagesEl = document.getElementById("total-images")
   if (totalImagesEl) totalImagesEl.textContent = designData.images.length
 
-  // FIXED: Previous button click - scroll up with proper binding
+  // Previous button click - scroll up
   if (prevBtn) {
-    // Remove any existing event listeners to prevent duplicates
-    const newPrevBtn = prevBtn.cloneNode(true)
-    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn)
-
-    newPrevBtn.addEventListener("click", () => {
+    prevBtn.onclick = () => {
       const scrollAmount = galleryScroll.clientHeight / designData.images.length
       galleryScroll.scrollBy({
         top: -scrollAmount,
@@ -1168,16 +923,12 @@ function setupGalleryNavigation(designData) {
           thumb.classList.toggle("active", idx === currentIndex)
         })
       }, 300)
-    })
+    }
   }
 
-  // FIXED: Next button click - scroll down with proper binding
+  // Next button click - scroll down
   if (nextBtn) {
-    // Remove any existing event listeners to prevent duplicates
-    const newNextBtn = nextBtn.cloneNode(true)
-    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn)
-
-    newNextBtn.addEventListener("click", () => {
+    nextBtn.onclick = () => {
       const scrollAmount = galleryScroll.clientHeight / designData.images.length
       galleryScroll.scrollBy({
         top: scrollAmount,
@@ -1200,7 +951,7 @@ function setupGalleryNavigation(designData) {
           thumb.classList.toggle("active", idx === currentIndex)
         })
       }, 300)
-    })
+    }
   }
 
   // Scroll event to update current image index
@@ -1221,13 +972,9 @@ function setupGalleryNavigation(designData) {
     })
   })
 
-  // FIXED: Thumbnail click event with proper binding
+  // Thumbnail click event
   document.querySelectorAll(".gallery-thumbnail").forEach((thumb, index) => {
-    // Remove any existing event listeners to prevent duplicates
-    const newThumb = thumb.cloneNode(true)
-    thumb.parentNode.replaceChild(newThumb, thumb)
-
-    newThumb.addEventListener("click", () => {
+    thumb.addEventListener("click", () => {
       // Scroll to the corresponding image
       const scrollAmount = index * (galleryScroll.clientHeight / designData.images.length)
       galleryScroll.scrollTo({
@@ -1246,7 +993,7 @@ function setupGalleryNavigation(designData) {
       document.querySelectorAll(".gallery-thumbnail").forEach((t) => {
         t.classList.remove("active")
       })
-      newThumb.classList.add("active")
+      thumb.classList.add("active")
     })
   })
 
@@ -1323,16 +1070,11 @@ const projectCaseStudyData = {
   },
 }
 
-// FIXED: Open project case study modal with proper event binding
+// Open project case study modal
 projectLinks.forEach((link) => {
-  // Make sure the link is clickable
-  link.style.cursor = "pointer"
-  link.style.pointerEvents = "auto"
-
-  // Add click event listener with proper binding
-  link.addEventListener("click", function (e) {
+  link.addEventListener("click", (e) => {
     e.preventDefault()
-    const projectId = this.getAttribute("data-project")
+    const projectId = link.getAttribute("data-project")
     const projectData = projectCaseStudyData[projectId]
 
     if (projectData && projectModal) {
@@ -1370,7 +1112,7 @@ projectLinks.forEach((link) => {
   })
 })
 
-// FIXED: Close project case study modal with proper event binding
+// Close project case study modal
 if (projectModalClose) {
   projectModalClose.addEventListener("click", () => {
     if (projectModal) {
@@ -1380,7 +1122,7 @@ if (projectModalClose) {
   })
 }
 
-// FIXED: Close design gallery modal with proper event binding
+// Close design gallery modal
 if (designModalClose) {
   designModalClose.addEventListener("click", () => {
     if (designModal) {
@@ -1411,16 +1153,12 @@ document.addEventListener("keydown", (e) => {
   }
 })
 
-// FIXED: View All Designs functionality with proper event binding
+// View All Designs functionality
 document.addEventListener("DOMContentLoaded", () => {
   const viewAllBtn = document.querySelector(".center-button .primary-btn")
   const designItems = document.querySelectorAll(".design-gallery .design-item")
 
   if (viewAllBtn && designItems.length > 6) {
-    // Make sure the button is clickable
-    viewAllBtn.style.cursor = "pointer"
-    viewAllBtn.style.pointerEvents = "auto"
-
     // Initially hide all items beyond the first 6
     designItems.forEach((item, index) => {
       if (index >= 6) {
@@ -1434,7 +1172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Track if additional designs are shown
     let additionalDesignsShown = false
 
-    // Add click event listener with proper binding
     viewAllBtn.addEventListener("click", () => {
       if (!additionalDesignsShown) {
         // Show all design items
