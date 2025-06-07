@@ -655,14 +655,14 @@ function setActiveNavLink() {
 
 window.addEventListener("scroll", setActiveNavLink)
 
-// FIXED: Enhanced Show/Hide Sidebars on Mobile with complete hiding
+// FIXED: Enhanced Show/Hide Sidebars on Mobile with smooth sliding animation
 let lastScrollTop = 0
 let scrollTimeout = null
 
 window.addEventListener("scroll", () => {
   const scrollTop = window.scrollY
 
-  // Only apply sidebar hiding on mobile
+  // Only apply sidebar sliding on mobile
   if (window.innerWidth <= 768) {
     // Clear any existing timeout
     if (scrollTimeout) {
@@ -672,11 +672,11 @@ window.addEventListener("scroll", () => {
     // Add a small delay to prevent flickering during fast scrolling
     scrollTimeout = setTimeout(() => {
       if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Scrolling down - hide sidebars completely
+        // Scrolling down - smoothly slide sidebars out
         if (leftSidebar) {
           leftSidebar.classList.remove("active")
           leftSidebar.style.cssText = `
-            width: 0 !important;
+            width: 60px !important;
             opacity: 0 !important;
             visibility: hidden !important;
             transform: translateX(-100%) !important;
@@ -687,7 +687,7 @@ window.addEventListener("scroll", () => {
         if (rightSidebar) {
           rightSidebar.classList.remove("active")
           rightSidebar.style.cssText = `
-            width: 0 !important;
+            width: 60px !important;
             opacity: 0 !important;
             visibility: hidden !important;
             transform: translateX(100%) !important;
@@ -696,7 +696,7 @@ window.addEventListener("scroll", () => {
           `
         }
       } else if (scrollTop < lastScrollTop) {
-        // Scrolling up - show sidebars
+        // Scrolling up - smoothly slide sidebars in
         if (leftSidebar) {
           leftSidebar.classList.add("active")
           leftSidebar.style.cssText = `
@@ -988,10 +988,14 @@ const designGalleryData = {
   ...additionalDesigns,
 }
 
-// Modern gallery functionality
+// FIXED: Modern gallery functionality with proper event binding
 designItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    const designId = item.getAttribute("data-id")
+  // Make sure the item is clickable by adding pointer cursor
+  item.style.cursor = "pointer"
+
+  // Add click event listener with proper binding
+  item.addEventListener("click", function () {
+    const designId = this.getAttribute("data-id")
     const designData = designGalleryData[designId]
 
     if (designData && designModal) {
@@ -1021,7 +1025,18 @@ designItems.forEach((item) => {
 
           thumbnail.appendChild(thumbnailImg)
           galleryThumbnails.appendChild(thumbnail)
+
+          // Add click event to each thumbnail
+          thumbnail.addEventListener("click", () => {
+            changeGalleryImage(image, index, designData.title)
+          })
         })
+      }
+
+      // Set initial main image
+      if (galleryMainImage) {
+        galleryMainImage.src = designData.images[0]
+        galleryMainImage.alt = `${designData.title} - Image 1`
       }
 
       // Open modal with fade-in effect
@@ -1086,7 +1101,7 @@ function changeGalleryImage(image, index, title) {
   }
 }
 
-// In the setupGalleryNavigation function, modify it to add PDF-like scrolling behavior
+// FIXED: Improved gallery navigation setup with proper event binding
 function setupGalleryNavigation(designData) {
   const prevBtn = document.querySelector(".gallery-nav.prev")
   const nextBtn = document.querySelector(".gallery-nav.next")
@@ -1124,9 +1139,13 @@ function setupGalleryNavigation(designData) {
   const totalImagesEl = document.getElementById("total-images")
   if (totalImagesEl) totalImagesEl.textContent = designData.images.length
 
-  // Previous button click - scroll up
+  // FIXED: Previous button click - scroll up with proper binding
   if (prevBtn) {
-    prevBtn.onclick = () => {
+    // Remove any existing event listeners to prevent duplicates
+    const newPrevBtn = prevBtn.cloneNode(true)
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn)
+
+    newPrevBtn.addEventListener("click", () => {
       const scrollAmount = galleryScroll.clientHeight / designData.images.length
       galleryScroll.scrollBy({
         top: -scrollAmount,
@@ -1149,12 +1168,16 @@ function setupGalleryNavigation(designData) {
           thumb.classList.toggle("active", idx === currentIndex)
         })
       }, 300)
-    }
+    })
   }
 
-  // Next button click - scroll down
+  // FIXED: Next button click - scroll down with proper binding
   if (nextBtn) {
-    nextBtn.onclick = () => {
+    // Remove any existing event listeners to prevent duplicates
+    const newNextBtn = nextBtn.cloneNode(true)
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn)
+
+    newNextBtn.addEventListener("click", () => {
       const scrollAmount = galleryScroll.clientHeight / designData.images.length
       galleryScroll.scrollBy({
         top: scrollAmount,
@@ -1177,7 +1200,7 @@ function setupGalleryNavigation(designData) {
           thumb.classList.toggle("active", idx === currentIndex)
         })
       }, 300)
-    }
+    })
   }
 
   // Scroll event to update current image index
@@ -1198,9 +1221,13 @@ function setupGalleryNavigation(designData) {
     })
   })
 
-  // Thumbnail click event
+  // FIXED: Thumbnail click event with proper binding
   document.querySelectorAll(".gallery-thumbnail").forEach((thumb, index) => {
-    thumb.addEventListener("click", () => {
+    // Remove any existing event listeners to prevent duplicates
+    const newThumb = thumb.cloneNode(true)
+    thumb.parentNode.replaceChild(newThumb, thumb)
+
+    newThumb.addEventListener("click", () => {
       // Scroll to the corresponding image
       const scrollAmount = index * (galleryScroll.clientHeight / designData.images.length)
       galleryScroll.scrollTo({
@@ -1219,7 +1246,7 @@ function setupGalleryNavigation(designData) {
       document.querySelectorAll(".gallery-thumbnail").forEach((t) => {
         t.classList.remove("active")
       })
-      thumb.classList.add("active")
+      newThumb.classList.add("active")
     })
   })
 
@@ -1296,11 +1323,16 @@ const projectCaseStudyData = {
   },
 }
 
-// Open project case study modal
+// FIXED: Open project case study modal with proper event binding
 projectLinks.forEach((link) => {
-  link.addEventListener("click", (e) => {
+  // Make sure the link is clickable
+  link.style.cursor = "pointer"
+  link.style.pointerEvents = "auto"
+
+  // Add click event listener with proper binding
+  link.addEventListener("click", function (e) {
     e.preventDefault()
-    const projectId = link.getAttribute("data-project")
+    const projectId = this.getAttribute("data-project")
     const projectData = projectCaseStudyData[projectId]
 
     if (projectData && projectModal) {
@@ -1338,7 +1370,7 @@ projectLinks.forEach((link) => {
   })
 })
 
-// Close project case study modal
+// FIXED: Close project case study modal with proper event binding
 if (projectModalClose) {
   projectModalClose.addEventListener("click", () => {
     if (projectModal) {
@@ -1348,7 +1380,7 @@ if (projectModalClose) {
   })
 }
 
-// Close design gallery modal
+// FIXED: Close design gallery modal with proper event binding
 if (designModalClose) {
   designModalClose.addEventListener("click", () => {
     if (designModal) {
@@ -1379,12 +1411,16 @@ document.addEventListener("keydown", (e) => {
   }
 })
 
-// View All Designs functionality
+// FIXED: View All Designs functionality with proper event binding
 document.addEventListener("DOMContentLoaded", () => {
   const viewAllBtn = document.querySelector(".center-button .primary-btn")
   const designItems = document.querySelectorAll(".design-gallery .design-item")
 
   if (viewAllBtn && designItems.length > 6) {
+    // Make sure the button is clickable
+    viewAllBtn.style.cursor = "pointer"
+    viewAllBtn.style.pointerEvents = "auto"
+
     // Initially hide all items beyond the first 6
     designItems.forEach((item, index) => {
       if (index >= 6) {
@@ -1398,6 +1434,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Track if additional designs are shown
     let additionalDesignsShown = false
 
+    // Add click event listener with proper binding
     viewAllBtn.addEventListener("click", () => {
       if (!additionalDesignsShown) {
         // Show all design items
