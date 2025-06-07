@@ -267,6 +267,8 @@ header {
   transition: var(--transition);
   width: 30px;
   height: 40px;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .social-icon:hover {
@@ -290,6 +292,7 @@ header {
   z-index: 100;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: var(--transition);
+  pointer-events: auto;
 }
 
 .theme-toggle:hover {
@@ -388,6 +391,9 @@ section {
   letter-spacing: 1px;
   transition: var(--transition);
   cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  text-decoration: none;
 }
 
 .primary-btn {
@@ -521,6 +527,8 @@ section {
   padding: 30px;
   transition: var(--transition);
   border: 1px solid var(--border-color);
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .service-card:hover {
@@ -554,6 +562,7 @@ section {
   aspect-ratio: 4 / 3;
   cursor: pointer;
   border: 1px solid #3a3a3c;
+  pointer-events: auto;
 }
 
 .design-item img {
@@ -642,6 +651,7 @@ section {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   max-width: 350px;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .project-info h3 {
@@ -659,6 +669,9 @@ section {
   font-weight: 500;
   color: var(--primary-color);
   position: relative;
+  cursor: pointer;
+  pointer-events: auto;
+  text-decoration: none;
 }
 
 .project-link::after {
@@ -746,6 +759,7 @@ section {
   display: inline-block;
   text-align: center;
   letter-spacing: 1px;
+  pointer-events: auto;
 }
 
 .contact-form .primary-btn:hover {
@@ -825,6 +839,8 @@ footer {
 
 .footer-links a {
   transition: var(--transition);
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .footer-links a:hover {
@@ -862,6 +878,7 @@ footer {
   transition: var(--transition);
   opacity: 0;
   visibility: hidden;
+  pointer-events: auto;
 }
 
 .scroll-top.active {
@@ -934,6 +951,7 @@ footer {
   color: var(--text-color);
   cursor: pointer;
   transition: var(--transition);
+  pointer-events: auto;
 }
 
 .modal-close:hover {
@@ -958,12 +976,46 @@ footer {
   width: 100%;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
 }
 
 .gallery-main img {
   width: 100%;
   height: auto;
   object-fit: cover;
+}
+
+.gallery-navigation {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 5;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.gallery-nav {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.gallery-nav:hover {
+  opacity: 1;
+  background-color: var(--primary-color);
+  transform: scale(1.1);
 }
 
 .gallery-thumbnails {
@@ -981,6 +1033,7 @@ footer {
   cursor: pointer;
   border: 2px solid transparent;
   transition: var(--transition);
+  pointer-events: auto;
 }
 
 .gallery-thumbnail.active {
@@ -1136,6 +1189,7 @@ footer {
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .case-study-image img {
@@ -1216,36 +1270,6 @@ footer {
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.gallery-navigation {
-  position: absolute;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px;
-  z-index: 5;
-}
-
-.gallery-nav {
-  background-color: rgba(0, 0, 0, 0.5);
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.3s ease;
-}
-
-.gallery-nav:hover {
-  opacity: 1;
-  background-color: var(--primary-color);
-  transform: scale(1.1);
-}
-
 .gallery-info {
   display: flex;
   flex-direction: column;
@@ -1288,6 +1312,7 @@ footer {
   border: 2px solid transparent;
   transition: all 0.3s ease;
   opacity: 0.7;
+  pointer-events: auto;
 }
 
 .modern-gallery .gallery-thumbnail:hover {
@@ -1525,6 +1550,8 @@ footer {
 
   header {
     padding: 0 20px;
+    left: 0;
+    right: 0;
   }
 
   .desktop-menu {
@@ -1537,6 +1564,48 @@ footer {
 
   .content-wrapper {
     padding: 0 20px;
+  }
+
+  main {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  footer {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* FIXED: Sidebars on mobile with smooth sliding animation */
+  .sidebar {
+    width: 60px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto;
+  }
+
+  .left-sidebar {
+    left: 0;
+    transform: translateX(0);
+    gap: 20px;
+  }
+
+  .right-sidebar {
+    right: 0;
+    transform: translateX(0);
+    gap: 40px;
+  }
+
+  .social-icon {
+    width: 24px;
+    height: 32px;
+  }
+
+  .social-icon img {
+    width: 20px;
+    height: 20px;
   }
 
   .hero-section h1 {
@@ -1559,32 +1628,6 @@ footer {
 
   .section-title {
     font-size: 28px;
-  }
-
-  /* FIXED: Complete sidebar hiding on mobile */
-  .sidebar {
-    width: 0;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-100%);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-  }
-
-  .left-sidebar {
-    transform: translateX(-100%);
-  }
-
-  .right-sidebar {
-    transform: translateX(100%);
-  }
-
-  .sidebar.active {
-    width: 60px;
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-    pointer-events: auto;
   }
 
   .theme-toggle {
@@ -1620,7 +1663,6 @@ footer {
     padding: 15px;
   }
 
-  /* Mobile responsive - only change max-width, keep animation consistent */
   .image-container img {
     max-width: 320px;
   }
@@ -1652,7 +1694,6 @@ footer {
     font-size: 24px;
   }
 
-  /* Very small screens - only change max-width, keep animation consistent */
   .image-container img {
     max-width: 260px;
   }
